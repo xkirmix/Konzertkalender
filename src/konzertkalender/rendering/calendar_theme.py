@@ -30,12 +30,12 @@ class CalendarTheme:
     fonts: FontFiles = field(default_factory=FontFiles)
     # gray levels: 0 = black, 255 = white; e-ink needs strong contrast for small text
     ink: int = 0
-    secondary_ink: int = 50
+    secondary_ink: int = 30
     venue_ink: int = 0
-    details_ink: int = 55
+    details_ink: int = 25
     muted_ink: int = 110
     paper: int = 255
-    footer_size: int = 20
+    footer_size: int = 22
     # event list
     heading_size: int = 31
     time_size: int = 34
@@ -49,4 +49,4 @@ class CalendarTheme:
     max_scale: float = 1.0
     min_stacked_scale: float = 0.8  # below this, one line per event reads better than two small lines
     min_scale: float = 0.8  # never smaller: the fullest evenings show "+ N weitere Events" instead
-    scale_step: float = 0.04
+    scale_step: float = 0.02

@@ -17,6 +17,7 @@ from konzertkalender.rendering.footer_info import FooterInfo
 from konzertkalender.rendering.frame_geometry import GAP_ABOVE_FOOTER_TEXT, FrameGeometry
 from konzertkalender.rendering.german_labels import GermanCalendarLabels
 from konzertkalender.rendering.layout_metrics import ScaledMetrics
+from konzertkalender.rendering.meta_fonts import MetaFonts
 from konzertkalender.rendering.rendered_calendar import LinkRegion, RegionKind, RenderedCalendar
 from konzertkalender.rendering.text_fitter import TextFitter
 
@@ -37,6 +38,7 @@ class KindleCalendarRenderer:
     ) -> None:
         self._theme = theme
         self._fonts = fonts
+        self._meta_fonts = MetaFonts(fonts)
         self._planner = planner
         self._fitter = fitter
         self._geometry = FrameGeometry(theme, fonts)
@@ -120,9 +122,9 @@ class KindleCalendarRenderer:
 
     def _draw_meta(self, draw: ImageDraw.ImageDraw, row: EventRow, metrics: ScaledMetrics,
                    x: float, y: float, anchor: str) -> None:
-        venue_font = self._fonts.get(FontRole.SEMIBOLD, metrics.meta_size)
+        venue_font = self._meta_fonts.venue(metrics.meta_size)
         draw.text((x, y), row.venue_label, font=venue_font, fill=self._theme.venue_ink, anchor=anchor)
-        details_font = self._fonts.get(FontRole.REGULAR, metrics.meta_size)
+        details_font = self._meta_fonts.details(metrics.meta_size)
         details_x = x + venue_font.getlength(row.venue_label)
         draw.text((details_x, y), row.details_label, font=details_font, fill=self._theme.details_ink, anchor=anchor)
 
@@ -130,8 +132,8 @@ class KindleCalendarRenderer:
         theme = self._theme
         left, right, top = theme.margin, theme.width - theme.margin, self._geometry.footer_top()
         draw.line((left, top, right, top), fill=theme.muted_ink, width=2)
-        font = self._fonts.get(FontRole.REGULAR, theme.footer_size)
-        hint_font = self._fonts.get(FontRole.SEMIBOLD, theme.footer_size)
+        font = self._meta_fonts.footer(theme.footer_size)
+        hint_font = self._fonts.get(FontRole.BOLD, theme.footer_size)
         hint_width = hint_font.getlength(self._footer_hint) if self._footer_hint else 0
         status = f"Stand {GermanCalendarLabels.timestamp(footer.generated_at)} · {footer.summary}"
         text_y = top + GAP_ABOVE_FOOTER_TEXT

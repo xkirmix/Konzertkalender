@@ -6,6 +6,7 @@ from dataclasses import dataclass
 
 from konzertkalender.rendering.calendar_theme import CalendarTheme
 from konzertkalender.rendering.font_provider import FontProvider, FontRole
+from konzertkalender.rendering.meta_fonts import MetaFonts
 
 
 @dataclass(frozen=True)
@@ -42,7 +43,7 @@ class MetricsCalculator:
             meta_size=meta,
             title_ascent=fonts.get(FontRole.BOLD, title).getmetrics()[0],
             title_line_height=fonts.line_height(FontRole.BOLD, title, leading=1.06),
-            meta_line_height=fonts.line_height(FontRole.REGULAR, meta, leading=1.12),
+            meta_line_height=MetaFonts(fonts).details_line_height(meta),
             heading_height=round(fonts.line_height(FontRole.HEAVY, heading) * theme.heading_height_factor),
             row_gap=round(theme.row_gap * scale),
             section_gap=round(theme.section_gap * scale),

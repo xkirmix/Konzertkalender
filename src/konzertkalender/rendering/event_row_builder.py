@@ -10,6 +10,7 @@ from konzertkalender.rendering.calendar_theme import CalendarTheme
 from konzertkalender.rendering.event_text_formatter import EventTextFormatter
 from konzertkalender.rendering.font_provider import FontProvider, FontRole
 from konzertkalender.rendering.layout_metrics import ScaledMetrics
+from konzertkalender.rendering.meta_fonts import MetaFonts
 from konzertkalender.rendering.text_fitter import TextFitter
 
 VENUE_SHARE_OF_META = 0.6
@@ -43,6 +44,7 @@ class EventRowBuilder:
     ) -> None:
         self._theme = theme
         self._fonts = fonts
+        self._meta_fonts = MetaFonts(fonts)
         self._fitter = fitter
         self._formatter = formatter
 
@@ -68,8 +70,8 @@ class EventRowBuilder:
         return EventRow(event, RowStyle.INLINE, self._formatter.time_label(event), (title,), venue, details, meta_x_offset)
 
     def _meta(self, event: Event, metrics: ScaledMetrics, available: float, compact: bool = False) -> tuple[str, str]:
-        venue_font = self._fonts.get(FontRole.SEMIBOLD, metrics.meta_size)
-        details_font = self._fonts.get(FontRole.REGULAR, metrics.meta_size)
+        venue_font = self._meta_fonts.venue(metrics.meta_size)
+        details_font = self._meta_fonts.details(metrics.meta_size)
         venue = self._fitter.ellipsize(self._formatter.venue_label(event), venue_font, available * VENUE_SHARE_OF_META)
         details_width = available - self._fitter.width(venue, venue_font)
         return venue, self._fitter.ellipsize(self._details(event, compact), details_font, details_width)
@@ -80,7 +82,7 @@ class EventRowBuilder:
         return self._formatter.details_label(event)
 
     def _meta_width(self, event: Event, metrics: ScaledMetrics) -> float:
-        venue_font = self._fonts.get(FontRole.SEMIBOLD, metrics.meta_size)
-        details_font = self._fonts.get(FontRole.REGULAR, metrics.meta_size)
+        venue_font = self._meta_fonts.venue(metrics.meta_size)
+        details_font = self._meta_fonts.details(metrics.meta_size)
         return (self._fitter.width(self._formatter.venue_label(event), venue_font)
                 + self._fitter.width(self._details(event, compact=True), details_font))

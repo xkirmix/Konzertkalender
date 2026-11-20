@@ -5,7 +5,10 @@ Programme von zehn Clubs in Bern und Fribourg. Es wählt die Konzerte, Partys un
 Donnerstag- bis Samstagabend aus und erstellt daraus:
 
 - `docs/kalender.png`: das Bild für den Schlafbildschirm des Kindle (1072 × 1448, Graustufen)
-- `docs/index.html`: die klickbare Version; jeder Eintrag öffnet die Event-Seite des Clubs
+- `docs/index.html`: dasselbe Bild, auf eine Bildschirmhöhe skaliert und antippbar; jede Zeile öffnet
+  die Event-Seite des Clubs, die Fusszeile und «+ N weitere» öffnen die vollständige Liste
+- `docs/liste.html`: alle Events als schlichte Liste (nichts geht verloren, auch wenn das Bild Titel
+  kürzen oder an sehr vollen Abenden Events weglassen muss)
 - `docs/kalender.json`: dieselben Daten maschinenlesbar
 
 Alles ist gratis: GitHub Actions und GitHub Pages, kein eigener Server, keine KI und kein Abo.

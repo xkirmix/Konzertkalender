@@ -1,4 +1,8 @@
-"""Draws the planned calendar layout into a grayscale image for the Kindle."""
+"""Draws the planned calendar layout into a grayscale image for the Kindle.
+
+It also records where every event (and the "+ N weitere" note and the footer) sits, so the web page
+can make the very same image tappable.
+"""
 
 from __future__ import annotations
 
@@ -10,9 +14,10 @@ from konzertkalender.rendering.calendar_theme import CalendarTheme
 from konzertkalender.rendering.event_row_builder import EventRow, RowStyle
 from konzertkalender.rendering.font_provider import FontProvider, FontRole
 from konzertkalender.rendering.footer_info import FooterInfo
-from konzertkalender.rendering.frame_geometry import GAP_ABOVE_FOOTER_TEXT, RULE_THICKNESS, FrameGeometry
+from konzertkalender.rendering.frame_geometry import GAP_ABOVE_FOOTER_TEXT, FrameGeometry
 from konzertkalender.rendering.german_labels import GermanCalendarLabels
 from konzertkalender.rendering.layout_metrics import ScaledMetrics
+from konzertkalender.rendering.rendered_calendar import LinkRegion, RegionKind, RenderedCalendar
 from konzertkalender.rendering.text_fitter import TextFitter
 
 HEADING_PADDING = 18
@@ -28,8 +33,6 @@ class KindleCalendarRenderer:
         fonts: FontProvider,
         planner: CalendarLayoutPlanner,
         fitter: TextFitter,
-        title: str,
-        subtitle_prefix: str,
         footer_hint: str = "",
     ) -> None:
         self._theme = theme
@@ -37,34 +40,41 @@ class KindleCalendarRenderer:
         self._planner = planner
         self._fitter = fitter
         self._geometry = FrameGeometry(theme, fonts)
-        self._title = title
-        self._subtitle_prefix = subtitle_prefix
         self._footer_hint = footer_hint
 
-    def render(self, program: WeekendProgram, footer: FooterInfo) -> Image.Image:
+    def render(self, program: WeekendProgram, footer: FooterInfo) -> RenderedCalendar:
         layout = self._planner.plan(program)
         image = Image.new("L", (self._theme.width, self._theme.height), self._theme.paper)
         draw = ImageDraw.Draw(image)
-        self._draw_header(draw)
-        y = self._geometry.header_height()
+        regions: list[LinkRegion] = []
+        y = self._geometry.content_top()
         for block in layout.blocks:
-            y = self._draw_block(draw, block, layout.metrics, y)
+            y = self._draw_block(draw, block, layout.metrics, y, regions)
         self._draw_footer(draw, footer)
-        return image
+        regions.append(LinkRegion(RegionKind.FOOTER, self._geometry.footer_top(), self._theme.height))
+        return RenderedCalendar(image, tuple(regions))
 
-    def _draw_header(self, draw: ImageDraw.ImageDraw) -> None:
-        """Title on the left, kinds of events on the right; the evening bars carry the dates."""
-        theme = self._theme
-        title_font = self._fonts.get(FontRole.HEAVY, theme.title_size)
-        baseline = theme.margin + title_font.getmetrics()[0]
-        draw.text((theme.margin, baseline), self._title, font=title_font, fill=theme.ink, anchor="ls")
-        subtitle_font = self._fonts.get(FontRole.SEMIBOLD, theme.subtitle_size)
-        draw.text((theme.width - theme.margin, baseline), self._subtitle_prefix, font=subtitle_font,
-                  fill=theme.secondary_ink, anchor="rs")
-        rule_top = self._geometry.rule_top()
-        draw.rectangle((theme.margin, rule_top, theme.width - theme.margin, rule_top + RULE_THICKNESS - 1), fill=theme.ink)
+    def _draw_block(self, draw: ImageDraw.ImageDraw, block: EveningBlock, metrics: ScaledMetrics, top: int,
+                    regions: list[LinkRegion]) -> int:
+        y = self._draw_heading(draw, block, metrics, top)
+        for row in block.rows:
+            row_top = y
+            y = self._draw_row(draw, row, metrics, y)
+            regions.append(LinkRegion(RegionKind.EVENT, row_top, y, row.event))
+        note = GermanCalendarLabels.hidden_events(block.hidden_count) if block.hidden_count else (
+            EMPTY_EVENING_NOTE if not block.rows else "")
+        if note:
+            note_top = y
+            note_font = self._fonts.get(FontRole.SEMIBOLD, metrics.meta_size)
+            draw.text((self._theme.margin + metrics.time_column_width, y), note, font=note_font,
+                      fill=self._theme.details_ink, anchor="la")
+            y += metrics.meta_line_height + metrics.row_gap
+            if block.hidden_count:
+                regions.append(LinkRegion(RegionKind.HIDDEN_EVENTS, note_top, y))
+        return y + metrics.section_gap
 
-    def _draw_block(self, draw: ImageDraw.ImageDraw, block: EveningBlock, metrics: ScaledMetrics, top: int) -> int:
+    def _draw_heading(self, draw: ImageDraw.ImageDraw, block: EveningBlock, metrics: ScaledMetrics, top: int) -> int:
+        """The black bar with the evening's date and how many events it has."""
         theme = self._theme
         left, right, bottom = theme.margin, theme.width - theme.margin, top + metrics.heading_height
         draw.rounded_rectangle((left, top, right, bottom), radius=HEADING_RADIUS, fill=theme.ink)
@@ -75,16 +85,7 @@ class KindleCalendarRenderer:
         count = GermanCalendarLabels.event_count(len(block.rows) + block.hidden_count)
         count_font = self._fonts.get(FontRole.SEMIBOLD, round(metrics.heading_size * 0.85))
         draw.text((right - HEADING_PADDING, middle), count, font=count_font, fill=theme.paper, anchor="rm")
-        y = bottom + metrics.row_gap
-        for row in block.rows:
-            y = self._draw_row(draw, row, metrics, y)
-        note = GermanCalendarLabels.hidden_events(block.hidden_count) if block.hidden_count else (
-            EMPTY_EVENING_NOTE if not block.rows else "")
-        if note:
-            note_font = self._fonts.get(FontRole.SEMIBOLD, metrics.meta_size)
-            draw.text((left + metrics.time_column_width, y), note, font=note_font, fill=theme.details_ink, anchor="la")
-            y += metrics.meta_line_height + metrics.row_gap
-        return y + metrics.section_gap
+        return bottom + metrics.row_gap
 
     def _draw_row(self, draw: ImageDraw.ImageDraw, row: EventRow, metrics: ScaledMetrics, top: int) -> int:
         if row.style is RowStyle.INLINE:

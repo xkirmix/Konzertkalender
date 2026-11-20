@@ -64,18 +64,23 @@ class EventRowBuilder:
         title_budget = max(text_width * MIN_INLINE_TITLE_SHARE, text_width - meta_width - metrics.inline_gap)
         title = self._fitter.ellipsize(event.title, title_font, title_budget)
         meta_x_offset = self._fitter.width(title, title_font) + metrics.inline_gap
-        venue, details = self._meta(event, metrics, text_width - meta_x_offset)
+        venue, details = self._meta(event, metrics, text_width - meta_x_offset, compact=True)
         return EventRow(event, RowStyle.INLINE, self._formatter.time_label(event), (title,), venue, details, meta_x_offset)
 
-    def _meta(self, event: Event, metrics: ScaledMetrics, available: float) -> tuple[str, str]:
+    def _meta(self, event: Event, metrics: ScaledMetrics, available: float, compact: bool = False) -> tuple[str, str]:
         venue_font = self._fonts.get(FontRole.SEMIBOLD, metrics.meta_size)
         details_font = self._fonts.get(FontRole.REGULAR, metrics.meta_size)
         venue = self._fitter.ellipsize(self._formatter.venue_label(event), venue_font, available * VENUE_SHARE_OF_META)
         details_width = available - self._fitter.width(venue, venue_font)
-        return venue, self._fitter.ellipsize(self._formatter.details_label(event), details_font, details_width)
+        return venue, self._fitter.ellipsize(self._details(event, compact), details_font, details_width)
+
+    def _details(self, event: Event, compact: bool) -> str:
+        if compact:
+            return self._formatter.compact_details_label(event)
+        return self._formatter.details_label(event)
 
     def _meta_width(self, event: Event, metrics: ScaledMetrics) -> float:
         venue_font = self._fonts.get(FontRole.SEMIBOLD, metrics.meta_size)
         details_font = self._fonts.get(FontRole.REGULAR, metrics.meta_size)
         return (self._fitter.width(self._formatter.venue_label(event), venue_font)
-                + self._fitter.width(self._formatter.details_label(event), details_font))
+                + self._fitter.width(self._details(event, compact=True), details_font))

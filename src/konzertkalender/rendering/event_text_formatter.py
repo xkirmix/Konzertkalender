@@ -24,3 +24,9 @@ class EventTextFormatter:
         if event.genres:
             parts.append(", ".join(event.genres))
         return META_SEPARATOR + META_SEPARATOR.join(parts)
+
+    @staticmethod
+    def compact_details_label(event: Event) -> str:
+        """ " · Garage Rock, Trash Punk" for one-line rows: the genres say enough, so the kind only
+        appears when there are no genres (" · Party")."""
+        return META_SEPARATOR + (", ".join(event.genres) if event.genres else event.kind.label)

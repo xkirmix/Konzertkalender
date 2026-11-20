@@ -9,13 +9,12 @@ from datetime import date, datetime
 from pathlib import Path
 from typing import Protocol
 
-from PIL import Image
-
 from konzertkalender.app.source_status import SourceStatus
 from konzertkalender.domain.event import Event
 from konzertkalender.domain.weekend_program import WeekendProgram
 from konzertkalender.domain.weekend_window import WeekendWindow
 from konzertkalender.rendering.footer_info import FooterInfo
+from konzertkalender.rendering.rendered_calendar import RenderedCalendar
 from konzertkalender.selection.event_selection_manager import EventSelectionManager
 from konzertkalender.venues.venue_source import VenueSource
 
@@ -23,12 +22,12 @@ LOGGER = logging.getLogger(__name__)
 
 
 class CalendarRenderer(Protocol):
-    def render(self, program: WeekendProgram, footer: FooterInfo) -> Image.Image: ...
+    def render(self, program: WeekendProgram, footer: FooterInfo) -> RenderedCalendar: ...
 
 
 class EditionPublisher(Protocol):
     def publish(
-        self, image: Image.Image, program: WeekendProgram, footer: FooterInfo, statuses: Sequence[SourceStatus]
+        self, calendar: RenderedCalendar, program: WeekendProgram, footer: FooterInfo, statuses: Sequence[SourceStatus]
     ) -> list[Path]: ...
 
 
@@ -77,8 +76,8 @@ class WeeklyUpdateCoordinator:
         if not footer.healthy_venues:
             LOGGER.error("Keine einzige Quelle lieferte Daten – es wird nichts veröffentlicht.")
             return UpdateReport(program, tuple(statuses), ())
-        image = self._renderer.render(program, footer)
-        written = self._publisher.publish(image, program, footer, statuses)
+        calendar = self._renderer.render(program, footer)
+        written = self._publisher.publish(calendar, program, footer, statuses)
         return UpdateReport(program, tuple(statuses), tuple(written))
 
     def _collect(self, window: WeekendWindow) -> tuple[list[Event], list[SourceStatus]]:

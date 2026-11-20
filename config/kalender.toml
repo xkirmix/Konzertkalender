@@ -2,7 +2,7 @@
 # Nach einer Änderung einfach committen – das nächste Montags-Update übernimmt sie.
 
 [kalender]
-titel = "Bern & Fribourg"
+titel = "Konzertkalender"  # Seitentitel im Browser
 zeitzone = "Europe/Zurich"
 
 # Events ab dieser Uhrzeit zählen zum Abend (früher = z.B. Workshops, Märkte -> ausgeblendet)

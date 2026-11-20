@@ -2,12 +2,8 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterable
 from datetime import date, datetime
 
-from konzertkalender.domain.event import EventKind
-
-KIND_PLURALS = {EventKind.CONCERT: "Konzerte", EventKind.PARTY: "Partys", EventKind.OTHER: "mehr"}
 WEEKDAY_NAMES = ("Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag")
 WEEKDAY_ABBREVIATIONS = ("Mo", "Di", "Mi", "Do", "Fr", "Sa", "So")
 MONTH_NAMES = (
@@ -43,9 +39,3 @@ class GermanCalendarLabels:
     @staticmethod
     def hidden_events(count: int) -> str:
         return f"+ {count} weiteres Event" if count == 1 else f"+ {count} weitere Events"
-
-    @staticmethod
-    def kinds_heading(kinds: Iterable[EventKind]) -> str:
-        """ "Konzerte & Partys", "Konzerte", "Konzerte, Partys & mehr"."""
-        names = [KIND_PLURALS[kind] for kind in EventKind if kind in set(kinds)]
-        return names[0] if len(names) == 1 else ", ".join(names[:-1]) + " & " + names[-1]

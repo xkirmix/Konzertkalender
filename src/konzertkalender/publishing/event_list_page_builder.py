@@ -1,4 +1,6 @@
-"""An e-ink friendly HTML page where every event links to its page on the venue's website.
+"""The complete list of the weekend's events as plain HTML, every event linking to its page on the
+venue's website. Reached from the calendar page (footer, "+ N weitere"), so nothing is lost when the
+image has to shorten titles or leave out events of a very full evening.
 
 Kept deliberately simple (no JavaScript, no web fonts, basic CSS) so the Kindle's old
 experimental browser renders it quickly.
@@ -17,8 +19,8 @@ from konzertkalender.rendering.german_labels import GermanCalendarLabels
 REFRESH_SECONDS = 6 * 3600
 STYLE = """
 body{font-family:sans-serif;margin:0 auto;max-width:46em;padding:.8em 1em 2em;color:#000;background:#fff}
-h1{font-size:1.9em;margin:0}
-.subtitle{font-weight:bold;color:#333;margin:.2em 0 .6em;border-bottom:.25em solid #000;padding-bottom:.5em}
+h1{font-size:1.3em;margin:.2em 0 .4em}
+.back{display:inline-block;color:#000;font-weight:bold;padding:.4em 0}
 h2{background:#000;color:#fff;font-size:1.05em;letter-spacing:.05em;padding:.4em .6em;margin:1.1em 0 .2em}
 a.event{display:block;color:#000;text-decoration:none;border-bottom:1px solid #aaa;padding:.65em .2em}
 .time{display:inline-block;width:3.6em;font-weight:bold}
@@ -30,22 +32,23 @@ a.event{display:block;color:#000;text-decoration:none;border-bottom:1px solid #a
 """
 
 
-class ClickablePageBuilder:
-    def __init__(self, title: str, subtitle_prefix: str, formatter: EventTextFormatter) -> None:
+class EventListPageBuilder:
+    def __init__(self, title: str, formatter: EventTextFormatter, back_href: str = "./") -> None:
         self._title = title
-        self._subtitle_prefix = subtitle_prefix
         self._formatter = formatter
+        self._back_href = back_href
 
     def build(self, program: WeekendProgram, footer: FooterInfo) -> str:
         window = program.window
-        subtitle = f"{self._subtitle_prefix} · {GermanCalendarLabels.date_range(window.first_evening, window.last_evening)}"
+        dates = GermanCalendarLabels.date_range(window.first_evening, window.last_evening)
         sections = "\n".join(self._evening_section(program, evening) for evening in window.evenings)
         return (
             "<!DOCTYPE html>\n<html lang=\"de\"><head><meta charset=\"utf-8\">"
             "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
             f"<meta http-equiv=\"refresh\" content=\"{REFRESH_SECONDS}\">"
-            f"<title>{escape(self._title)} – {escape(subtitle)}</title><style>{STYLE}</style></head><body>\n"
-            f"<h1>{escape(self._title)}</h1><div class=\"subtitle\">{escape(subtitle)}</div>\n{sections}\n"
+            f"<title>{escape(self._title)} – Alle Events</title><style>{STYLE}</style></head><body>\n"
+            f"<a class=\"back\" href=\"{escape(self._back_href, quote=True)}\">‹ Kalender</a>\n"
+            f"<h1>Alle Events · {escape(dates)}</h1>\n{sections}\n"
             f"<div class=\"footer\">Stand {escape(GermanCalendarLabels.timestamp(footer.generated_at))} · "
             f"{escape(footer.summary)} · Eintrag antippen für Details</div>\n</body></html>\n"
         )

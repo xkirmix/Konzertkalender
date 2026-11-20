@@ -11,7 +11,8 @@ from konzertkalender.app.toolkit_factory import SourceToolkitFactory
 from konzertkalender.app.weekly_update_coordinator import WeeklyUpdateCoordinator
 from konzertkalender.domain.weekend_window import WeekendWindow
 from konzertkalender.fetching.page_fetcher import PageFetcher
-from konzertkalender.publishing.clickable_page_builder import ClickablePageBuilder
+from konzertkalender.publishing.calendar_page_builder import CalendarPageBuilder
+from konzertkalender.publishing.event_list_page_builder import EventListPageBuilder
 from konzertkalender.publishing.program_serializer import ProgramSerializer
 from konzertkalender.publishing.site_publisher import SitePublisher
 from konzertkalender.rendering.calendar_layout import CalendarLayoutPlanner
@@ -19,7 +20,6 @@ from konzertkalender.rendering.calendar_renderer import KindleCalendarRenderer
 from konzertkalender.rendering.calendar_theme import CalendarTheme
 from konzertkalender.rendering.event_text_formatter import EventTextFormatter
 from konzertkalender.rendering.font_provider import FontProvider
-from konzertkalender.rendering.german_labels import GermanCalendarLabels
 from konzertkalender.rendering.text_fitter import TextFitter
 from konzertkalender.selection.event_selection_manager import EventSelectionManager
 from konzertkalender.venues.venue_registry import VenueRegistry
@@ -46,24 +46,26 @@ class ApplicationAssembler:
         config = self._config
         toolkit = SourceToolkitFactory.create(config, today=self._clock().date(), fetcher=self._fetcher)
         formatter = EventTextFormatter()
-        subtitle_prefix = GermanCalendarLabels.kinds_heading(config.included_kinds)
         return WeeklyUpdateCoordinator(
             sources=VenueRegistry().build(config.venue_keys, toolkit),
             selection=EventSelectionManager(config.included_kinds),
-            renderer=self._build_renderer(formatter, subtitle_prefix),
+            renderer=self._build_renderer(formatter),
             publisher=SitePublisher(
-                self._output_dir, ClickablePageBuilder(config.title, subtitle_prefix, formatter), ProgramSerializer()
+                self._output_dir,
+                CalendarPageBuilder(config.title, formatter),
+                EventListPageBuilder(config.title, formatter),
+                ProgramSerializer(),
             ),
             clock=self._clock,
             window_for_date=self._window_for_date,
         )
 
-    def _build_renderer(self, formatter: EventTextFormatter, subtitle_prefix: str) -> KindleCalendarRenderer:
+    def _build_renderer(self, formatter: EventTextFormatter) -> KindleCalendarRenderer:
         fonts = FontProvider(self._theme.fonts)
         fitter = TextFitter()
         planner = CalendarLayoutPlanner(self._theme, fonts, fitter, formatter)
         return KindleCalendarRenderer(
-            self._theme, fonts, planner, fitter, self._config.title, subtitle_prefix, FOOTER_HINT
+            self._theme, fonts, planner, fitter, FOOTER_HINT
         )
 
     def _window_for_date(self, reference: date) -> WeekendWindow:

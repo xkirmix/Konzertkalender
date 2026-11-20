@@ -35,15 +35,12 @@ class CalendarTheme:
     details_ink: int = 55
     muted_ink: int = 110
     paper: int = 255
-    # header (one line: title left, kinds right) and footer
-    title_size: int = 40
-    subtitle_size: int = 26
     footer_size: int = 20
     # event list
-    heading_size: int = 29
-    time_size: int = 32
-    event_title_size: int = 32
-    meta_size: int = 28
+    heading_size: int = 31
+    time_size: int = 34
+    event_title_size: int = 34
+    meta_size: int = 30
     heading_height_factor: float = 1.3
     row_gap: int = 10
     section_gap: int = 14

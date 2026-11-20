@@ -115,3 +115,25 @@ def test_daemon_downloads_on_wakeup_when_due(kindle: FakeKindle) -> None:
     kindle.run_daemon()
     assert kindle.image_file.read_bytes() == PNG_BYTES
     assert f"eips -f -g {kindle.image_file}" in kindle.calls()
+
+
+def test_start_scriptlet_starts_restarts_and_stop_scriptlet_stops(kindle: FakeKindle) -> None:
+    kindle.keep_listening()
+    kindle.run_scriptlet("konzertkalender-starten.sh")
+    kindle.run_scriptlet("konzertkalender-starten.sh")
+    kindle.run_scriptlet("konzertkalender-stoppen.sh")
+    messages = kindle.screen_messages()
+    assert "Dienst gestartet." in messages
+    assert "Dienst neu gestartet." in messages
+    assert "Kalender ist aktuell." in messages
+    assert messages[-1] == "Dienst gestoppt. Der Kindle ist wieder normal."
+    assert not (kindle.tmp_dir / "konzertkalender.pid").exists()
+
+
+def test_timestamp_in_the_future_makes_refresh_due(kindle: FakeKindle) -> None:
+    refresh_result(kindle)
+    future = int((kindle.data_dir / "last_attempt").read_text()) + 7 * 3600
+    (kindle.data_dir / "last_attempt").write_text(f"{future}\n")
+    (kindle.data_dir / "last_success").write_text(f"{future}\n")
+    completed = kindle.run_with_library('refresh_is_due && echo due; seconds_until_refresh')
+    assert completed.stdout.split() == ["due", "120"]

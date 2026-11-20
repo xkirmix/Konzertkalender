@@ -23,7 +23,10 @@ printable_words() {
 
 report_system() {
     section "System"
-    date
+    echo "date:    $(date)"
+    echo "date -u: $(date -u)"
+    echo "TZ=${TZ:-<leer>}  /etc/TZ: $(cat /etc/TZ 2>&1)"
+    hwclock -r 2>&1 | head -2
     id
     uname -a
     cat /etc/prettyversion.txt 2>&1

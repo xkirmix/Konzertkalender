@@ -4,6 +4,7 @@
 
 LAST_SUCCESS_FILE="$DATA_DIR/last_success"
 LAST_ATTEMPT_FILE="$DATA_DIR/last_attempt"
+LAST_RESULT_FILE="$DATA_DIR/last_result"
 MINIMUM_WAKEUP_SECONDS=120
 DUE_TOLERANCE_SECONDS=300
 
@@ -23,6 +24,7 @@ record_refresh_result() {
     if [ "$1" -le 1 ]; then
         echo "$attempt_epoch" > "$LAST_SUCCESS_FILE"
     fi
+    echo "$1" > "$LAST_RESULT_FILE"
 }
 
 last_refresh_failed() {
@@ -30,7 +32,10 @@ last_refresh_failed() {
 }
 
 next_refresh_epoch() {
-    if last_refresh_failed; then
+    # A timestamp in the future means the clock was set back: refresh right away.
+    if [ "$(read_epoch "$LAST_ATTEMPT_FILE")" -gt "$(now_epoch)" ]; then
+        echo 0
+    elif last_refresh_failed; then
         echo $(( $(read_epoch "$LAST_ATTEMPT_FILE") + RETRY_MINUTES * 60 ))
     else
         echo $(( $(read_epoch "$LAST_SUCCESS_FILE") + REFRESH_HOURS * 3600 ))

@@ -14,11 +14,23 @@ start_event_listener() {
     mkfifo "$EVENT_FIFO"
     lipc-wait-event -m -s 0 com.lab126.powerd "$POWERD_EVENTS" > "$EVENT_FIFO" &
     LISTENER_PID=$!
-    echo "$$ $LISTENER_PID" > "$PID_FILE"
+}
+
+# Troubleshooting aid (DEBUG_EVENTS=1): logs every raw powerd signal seen on the system bus.
+start_debug_recorder() {
+    DEBUG_PID=""
+    [ "$DEBUG_EVENTS" = "1" ] && command -v dbus-monitor > /dev/null 2>&1 || return 0
+    dbus-monitor --system "type='signal',interface='com.lab126.powerd'" 2>&1 |
+        while read -r bus_line; do
+            case "$bus_line" in
+                *member=*) log "dbus: ${bus_line##*member=}" ;;
+            esac
+        done &
+    DEBUG_PID=$!
 }
 
 shutdown_service() {
-    kill "$LISTENER_PID" 2> /dev/null
+    kill "$LISTENER_PID" $DEBUG_PID 2> /dev/null
     rm -f "$EVENT_FIFO" "$PID_FILE"
     log "Dienst beendet"
     exit 0
@@ -57,6 +69,8 @@ handle_event() {
 }
 
 start_event_listener
+start_debug_recorder
+echo "$$ $LISTENER_PID $DEBUG_PID" > "$PID_FILE"
 trap shutdown_service TERM INT
 log "Dienst gestartet (PID $$, Ereignisse von PID $LISTENER_PID)"
 use_start_image_if_missing

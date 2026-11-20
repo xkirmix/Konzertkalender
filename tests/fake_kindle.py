@@ -15,6 +15,7 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 KINDLE_SOURCE = PROJECT_ROOT / "kindle" / "konzertkalender"
+SCRIPTLETS = PROJECT_ROOT / "kindle" / "documents"
 BUSYBOX = shutil.which("busybox")
 PNG_BYTES = b"\x89PNG\r\n\x1a\n" + bytes(32)  # the scripts only check the PNG signature
 
@@ -30,6 +31,7 @@ class FakeKindle:
         self.calls_file = root / "calls.log"
         self.events_file = root / "powerd-events.txt"
         self.served_image = root / "served" / "kalender.png"
+        self.keep_listening_flag = root / "keep-listening"
         shutil.copytree(KINDLE_SOURCE, self.install_home)
         for folder in (self.data_dir, self.tmp_dir, self.fake_bin, self.served_image.parent):
             folder.mkdir(parents=True)
@@ -56,6 +58,17 @@ class FakeKindle:
     def run_with_library(self, commands: str) -> subprocess.CompletedProcess[str]:
         library = self.install_home / "bin" / "kalender_lib.sh"
         return self._run_ash(["-c", f'. "{library}"\n{commands}'])
+
+    def keep_listening(self) -> None:
+        """Lets the fake event source stay open, so a started service keeps running."""
+        self.keep_listening_flag.touch()
+
+    def run_scriptlet(self, file_name: str) -> subprocess.CompletedProcess[str]:
+        return self._run_ash([str(SCRIPTLETS / file_name)])
+
+    def screen_messages(self) -> list[str]:
+        prefix = "eips 1 "
+        return [call.split(" ", 3)[3] for call in self.calls() if call.startswith(prefix)]
 
     def run_daemon(self) -> subprocess.CompletedProcess[str]:
         return self._run_ash([str(self.install_home / "bin" / "kalender_daemon.sh")])
@@ -99,7 +112,10 @@ class FakeKindle:
             "lipc-get-prop",
             f'{record}\ncase "$2" in cmState) echo "{wifi_state}" ;; battLevel) echo 80 ;; esac',
         )
-        self._write_tool("lipc-wait-event", f'{record}\ncat "{self.events_file}"')
+        self._write_tool(
+            "lipc-wait-event",
+            f'{record}\ncat "{self.events_file}"\n[ -f "{self.keep_listening_flag}" ] && exec sleep 20',
+        )
 
     def _write_tool(self, name: str, body: str) -> None:
         tool = self.fake_bin / name

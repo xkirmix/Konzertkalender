@@ -5,6 +5,8 @@
 LOG_FILE="$DATA_DIR/konzertkalender.log"
 USB_LOG_FILE="$INSTALL_HOME/konzertkalender.log"
 LOG_MAX_BYTES=200000
+# Swiss time, spelled out: the time zone configured on the Kindle itself is unreliable.
+LOG_TIMEZONE="CET-1CEST,M3.5.0,M10.5.0/3"
 
 rotate_if_large() {
     [ -f "$1" ] || return 0
@@ -15,7 +17,7 @@ rotate_if_large() {
 }
 
 log() {
-    line="$(date '+%Y-%m-%d %H:%M:%S') $*"
+    line="$(TZ="$LOG_TIMEZONE" date '+%Y-%m-%d %H:%M:%S') $*"
     mkdir -p "$DATA_DIR"
     rotate_if_large "$LOG_FILE"
     echo "$line" >> "$LOG_FILE"

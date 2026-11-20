@@ -11,6 +11,8 @@ import os
 import re
 import shutil
 import subprocess
+import time
+from collections.abc import Callable
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -32,11 +34,14 @@ class FakeKindle:
         self.events_file = root / "powerd-events.txt"
         self.served_image = root / "served" / "kalender.png"
         self.keep_listening_flag = root / "keep-listening"
+        self.powerd_state_file = root / "powerd-state"
+        self.tick_seconds = 0
         shutil.copytree(KINDLE_SOURCE, self.install_home)
         for folder in (self.data_dir, self.tmp_dir, self.fake_bin, self.served_image.parent):
             folder.mkdir(parents=True)
         self.serve(PNG_BYTES)
         self.powerd_events([])
+        self.set_powerd_state("screenSaver")
         self._point_image_url_at_served_file()
         self._write_fake_tools(wifi_state)
 
@@ -49,6 +54,13 @@ class FakeKindle:
 
     def powerd_events(self, events: list[str]) -> None:
         self.events_file.write_text("".join(f"{event} 0\n" for event in events))
+
+    def set_powerd_state(self, state: str) -> None:
+        self.powerd_state_file.write_text(f"{state}\n")
+
+    def log_text(self) -> str:
+        log_file = self.data_dir / "konzertkalender.log"
+        return log_file.read_text() if log_file.exists() else ""
 
     def calls(self) -> list[str]:
         if not self.calls_file.exists():
@@ -70,8 +82,35 @@ class FakeKindle:
         prefix = "eips 1 "
         return [call.split(" ", 3)[3] for call in self.calls() if call.startswith(prefix)]
 
-    def run_daemon(self) -> subprocess.CompletedProcess[str]:
-        return self._run_ash([str(self.install_home / "bin" / "kalender_daemon.sh")])
+    def run_daemon(self, home: Path | None = None) -> subprocess.CompletedProcess[str]:
+        return self._run_ash([str((home or self.install_home) / "bin" / "kalender_daemon.sh")])
+
+    def start_daemon_in_background(self) -> subprocess.Popen[str]:
+        assert BUSYBOX is not None
+        daemon = str(self.install_home / "bin" / "kalender_daemon.sh")
+        return subprocess.Popen([BUSYBOX, "ash", daemon], env=self._environment(), text=True)
+
+    def stop_services(self) -> None:
+        """Stops every service the scripts started (their PIDs are in the PID file)."""
+        pid_file = self.tmp_dir / "konzertkalender.pid"
+        if pid_file.exists():
+            subprocess.run(["kill", *pid_file.read_text().split()], check=False)
+
+    def install_runtime_copy(self) -> Path:
+        """Copies the installation to RAM the way the scriptlet does, and returns its folder."""
+        runtime_home = self.tmp_dir / "konzertkalender"
+        shutil.copytree(self.install_home / "bin", runtime_home / "bin")
+        shutil.copy(self.install_home / "konzertkalender.conf", runtime_home)
+        return runtime_home
+
+    @staticmethod
+    def wait_until(condition: Callable[[], bool], seconds: float = 10.0) -> bool:
+        deadline = time.monotonic() + seconds
+        while time.monotonic() < deadline:
+            if condition():
+                return True
+            time.sleep(0.1)
+        return condition()
 
     def _run_ash(self, arguments: list[str]) -> subprocess.CompletedProcess[str]:
         assert BUSYBOX is not None
@@ -92,6 +131,7 @@ class FakeKindle:
             "KONZERTKALENDER_DATA_DIR": str(self.data_dir),
             "KONZERTKALENDER_TMP_DIR": str(self.tmp_dir),
             "SCREENSAVER_SETTLE_SECONDS": "0",
+            "TICK_SECONDS": str(self.tick_seconds),
         }
 
     def _point_image_url_at_served_file(self) -> None:
@@ -110,7 +150,8 @@ class FakeKindle:
         self._write_tool("eips", record)
         self._write_tool(
             "lipc-get-prop",
-            f'{record}\ncase "$2" in cmState) echo "{wifi_state}" ;; battLevel) echo 80 ;; esac',
+            f'{record}\ncase "$2" in cmState) echo "{wifi_state}" ;; battLevel) echo 80 ;;\n'
+            f'  state) cat "{self.powerd_state_file}" ;; esac',
         )
         self._write_tool(
             "lipc-wait-event",

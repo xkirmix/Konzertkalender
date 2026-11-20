@@ -79,6 +79,17 @@ Der Dienst läuft aus einer Kopie im Arbeitsspeicher (`/tmp/konzertkalender`) un
 Zeitstempel und Log unter `/var/local/konzertkalender` ab. So läuft er weiter, während der Kindle
 als USB-Laufwerk am Computer hängt.
 
+So holt der Kindle neue Ausgaben:
+
+- **Auf Akku:** Vor dem Tiefschlaf stellt der Dienst den Wecker (RTC) auf die nächste fällige
+  Aktualisierung (alle `REFRESH_HOURS`, nach einem Fehler nach `RETRY_MINUTES`).
+- **Am Ladekabel** schläft der Kindle oft nie richtig ein; dann prüft ein Takt alle 30 Minuten, ob
+  eine Ausgabe fällig ist.
+- Das Bild wird nur neu gezeichnet, wenn der Kindle schläft – nie, während jemand liest.
+- Liegen neue Skripte oder Einstellungen auf dem Kindle, startet sich der Dienst beim nächsten
+  Einschlafen selbst neu; «Konzertkalender starten» ist dafür nicht nötig.
+- `DEBUG_EVENTS=1` in `konzertkalender.conf` schreibt jedes Schlaf-/Aufwach-Signal ins Log.
+
 ## Anpassen
 
 - **Clubs, Abendbeginn, Arten** (`konzert`, `party`, `andere`): `config/kalender.toml`

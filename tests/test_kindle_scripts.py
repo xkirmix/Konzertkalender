@@ -137,3 +137,35 @@ def test_timestamp_in_the_future_makes_refresh_due(kindle: FakeKindle) -> None:
     (kindle.data_dir / "last_success").write_text(f"{future}\n")
     completed = kindle.run_with_library('refresh_is_due && echo due; seconds_until_refresh')
     assert completed.stdout.split() == ["due", "120"]
+
+
+def test_tick_refreshes_while_kindle_never_suspends(kindle: FakeKindle) -> None:
+    kindle.tick_seconds = 1
+    kindle.keep_listening()
+    service = kindle.start_daemon_in_background()
+    try:
+        assert kindle.wait_until(lambda: f"eips -f -g {kindle.image_file}" in kindle.calls())
+        assert kindle.image_file.read_bytes() == PNG_BYTES
+    finally:
+        kindle.stop_services()
+        service.wait(timeout=10)
+
+
+def test_new_edition_is_not_painted_while_kindle_is_in_use(kindle: FakeKindle) -> None:
+    kindle.set_powerd_state("active")
+    kindle.powerd_events(["wakeupFromSuspend"])
+    kindle.run_daemon()
+    assert kindle.image_file.read_bytes() == PNG_BYTES
+    assert f"eips -f -g {kindle.image_file}" not in kindle.calls()
+
+
+def test_service_restarts_itself_after_an_update_was_copied(kindle: FakeKindle) -> None:
+    runtime_home = kindle.install_runtime_copy()
+    config = kindle.install_home / "konzertkalender.conf"
+    config.write_text(config.read_text() + "# neue Einstellung\n")
+    kindle.powerd_events(["goingToScreenSaver"])
+    kindle.run_daemon(home=runtime_home)
+    assert kindle.wait_until(lambda: kindle.log_text().count("Dienst gestartet") == 2)
+    assert kindle.wait_until(lambda: "Ereignisquellen beendet" in kindle.log_text())
+    assert kindle.log_text().count("Neue Version gefunden") == 1
+    assert (runtime_home / "konzertkalender.conf").read_text() == config.read_text()

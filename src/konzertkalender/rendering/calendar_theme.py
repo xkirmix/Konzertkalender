@@ -1,4 +1,4 @@
-"""Screen size, colors, fonts and base text sizes of the calendar image."""
+"""Screen size, colors, fonts, base text sizes and spacing of the calendar image."""
 
 from __future__ import annotations
 
@@ -18,25 +18,38 @@ class FontFiles:
 
 @dataclass(frozen=True)
 class CalendarTheme:
-    """Defaults fit a Kindle Paperwhite 4 in portrait orientation (300 ppi, 16 gray levels)."""
+    """Defaults fit a Kindle Paperwhite 4 in portrait orientation (300 ppi, 16 gray levels).
+
+    Sizes and gaps are given at scale 1.0; the layout scales them down (not below `min_scale`) when
+    a weekend has many events.
+    """
 
     width: int = 1072
     height: int = 1448
-    margin: int = 44
+    margin: int = 40
     fonts: FontFiles = field(default_factory=FontFiles)
+    # gray levels: 0 = black, 255 = white; e-ink needs strong contrast for small text
     ink: int = 0
-    secondary_ink: int = 70
-    muted_ink: int = 120
+    secondary_ink: int = 50
+    venue_ink: int = 0
+    details_ink: int = 55
+    muted_ink: int = 110
     paper: int = 255
-    title_size: int = 54
-    subtitle_size: int = 28
-    heading_size: int = 29
-    time_size: int = 31
-    event_title_size: int = 31
-    meta_size: int = 24
+    # header (one line: title left, kinds right) and footer
+    title_size: int = 40
+    subtitle_size: int = 26
     footer_size: int = 20
+    # event list
+    heading_size: int = 29
+    time_size: int = 32
+    event_title_size: int = 32
+    meta_size: int = 28
+    heading_height_factor: float = 1.3
+    row_gap: int = 10
+    section_gap: int = 14
+    inline_gap: int = 18
     max_title_lines: int = 2
     max_scale: float = 1.0
     min_stacked_scale: float = 0.8  # below this, one line per event reads better than two small lines
-    min_scale: float = 0.62
+    min_scale: float = 0.8  # never smaller: the fullest evenings show "+ N weitere Events" instead
     scale_step: float = 0.04

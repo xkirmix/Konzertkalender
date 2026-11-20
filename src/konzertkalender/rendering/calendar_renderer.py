@@ -45,21 +45,22 @@ class KindleCalendarRenderer:
         layout = self._planner.plan(program)
         image = Image.new("L", (self._theme.width, self._theme.height), self._theme.paper)
         draw = ImageDraw.Draw(image)
-        self._draw_header(draw, program)
+        self._draw_header(draw)
         y = self._geometry.header_height()
         for block in layout.blocks:
             y = self._draw_block(draw, block, layout.metrics, y)
         self._draw_footer(draw, footer)
         return image
 
-    def _draw_header(self, draw: ImageDraw.ImageDraw, program: WeekendProgram) -> None:
-        theme, window = self._theme, program.window
+    def _draw_header(self, draw: ImageDraw.ImageDraw) -> None:
+        """Title on the left, kinds of events on the right; the evening bars carry the dates."""
+        theme = self._theme
         title_font = self._fonts.get(FontRole.HEAVY, theme.title_size)
-        draw.text((theme.margin, theme.margin), self._title, font=title_font, fill=theme.ink, anchor="la")
-        subtitle = f"{self._subtitle_prefix} · {GermanCalendarLabels.date_range(window.first_evening, window.last_evening)}"
-        subtitle_y = theme.margin + self._geometry.title_line_height()
+        baseline = theme.margin + title_font.getmetrics()[0]
+        draw.text((theme.margin, baseline), self._title, font=title_font, fill=theme.ink, anchor="ls")
         subtitle_font = self._fonts.get(FontRole.SEMIBOLD, theme.subtitle_size)
-        draw.text((theme.margin, subtitle_y), subtitle, font=subtitle_font, fill=theme.secondary_ink, anchor="la")
+        draw.text((theme.width - theme.margin, baseline), self._subtitle_prefix, font=subtitle_font,
+                  fill=theme.secondary_ink, anchor="rs")
         rule_top = self._geometry.rule_top()
         draw.rectangle((theme.margin, rule_top, theme.width - theme.margin, rule_top + RULE_THICKNESS - 1), fill=theme.ink)
 
@@ -81,7 +82,7 @@ class KindleCalendarRenderer:
             EMPTY_EVENING_NOTE if not block.rows else "")
         if note:
             note_font = self._fonts.get(FontRole.SEMIBOLD, metrics.meta_size)
-            draw.text((left + metrics.time_column_width, y), note, font=note_font, fill=theme.muted_ink, anchor="la")
+            draw.text((left + metrics.time_column_width, y), note, font=note_font, fill=theme.details_ink, anchor="la")
             y += metrics.meta_line_height + metrics.row_gap
         return y + metrics.section_gap
 
@@ -119,10 +120,10 @@ class KindleCalendarRenderer:
     def _draw_meta(self, draw: ImageDraw.ImageDraw, row: EventRow, metrics: ScaledMetrics,
                    x: float, y: float, anchor: str) -> None:
         venue_font = self._fonts.get(FontRole.SEMIBOLD, metrics.meta_size)
-        draw.text((x, y), row.venue_label, font=venue_font, fill=self._theme.secondary_ink, anchor=anchor)
+        draw.text((x, y), row.venue_label, font=venue_font, fill=self._theme.venue_ink, anchor=anchor)
         details_font = self._fonts.get(FontRole.REGULAR, metrics.meta_size)
         details_x = x + venue_font.getlength(row.venue_label)
-        draw.text((details_x, y), row.details_label, font=details_font, fill=self._theme.muted_ink, anchor=anchor)
+        draw.text((details_x, y), row.details_label, font=details_font, fill=self._theme.details_ink, anchor=anchor)
 
     def _draw_footer(self, draw: ImageDraw.ImageDraw, footer: FooterInfo) -> None:
         theme = self._theme

@@ -43,9 +43,9 @@ class MetricsCalculator:
             title_ascent=fonts.get(FontRole.BOLD, title).getmetrics()[0],
             title_line_height=fonts.line_height(FontRole.BOLD, title, leading=1.06),
             meta_line_height=fonts.line_height(FontRole.REGULAR, meta, leading=1.12),
-            heading_height=round(fonts.line_height(FontRole.HEAVY, heading) * 1.45),
-            row_gap=round(13 * scale),
-            section_gap=round(16 * scale),
-            inline_gap=round(18 * scale),
+            heading_height=round(fonts.line_height(FontRole.HEAVY, heading) * theme.heading_height_factor),
+            row_gap=round(theme.row_gap * scale),
+            section_gap=round(theme.section_gap * scale),
+            inline_gap=round(theme.inline_gap * scale),
             time_column_width=round(fonts.get(FontRole.BOLD, time_size).getlength("00:00") + 22 * scale),
         )

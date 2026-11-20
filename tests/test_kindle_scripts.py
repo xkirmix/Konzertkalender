@@ -1,0 +1,117 @@
+"""The Kindle-side shell scripts, run under busybox ash against a stand-in Kindle."""
+
+from __future__ import annotations
+
+import re
+from pathlib import Path
+
+import pytest
+
+from fake_kindle import BUSYBOX, PNG_BYTES, FakeKindle
+
+pytestmark = pytest.mark.skipif(BUSYBOX is None, reason="busybox ist nicht installiert")
+
+TWELVE_HOURS = 12 * 3600
+ONE_HOUR = 3600
+
+
+@pytest.fixture
+def kindle(tmp_path: Path) -> FakeKindle:
+    return FakeKindle(tmp_path)
+
+
+def refresh_result(kindle: FakeKindle) -> str:
+    completed = kindle.run_with_library('refresh_edition; echo "result=$?"')
+    match = re.search(r"result=(\d)", completed.stdout)
+    assert match, completed.stderr
+    return match.group(1)
+
+
+def seconds_until_refresh(kindle: FakeKindle) -> int:
+    return int(kindle.run_with_library("seconds_until_refresh").stdout.strip())
+
+
+def test_refresh_stores_new_image_then_reports_unchanged(kindle: FakeKindle) -> None:
+    assert refresh_result(kindle) == "0"
+    assert kindle.image_file.read_bytes() == PNG_BYTES
+    assert refresh_result(kindle) == "1"
+
+
+def test_refresh_keeps_previous_image_when_answer_is_not_png(kindle: FakeKindle) -> None:
+    refresh_result(kindle)
+    kindle.serve(b"<html>404 - Not Found</html>")
+    assert refresh_result(kindle) == "2"
+    assert kindle.image_file.read_bytes() == PNG_BYTES
+    assert "kein PNG" in (kindle.data_dir / "konzertkalender.log").read_text()
+
+
+def test_next_wakeup_after_success_is_refresh_hours(kindle: FakeKindle) -> None:
+    refresh_result(kindle)
+    assert TWELVE_HOURS - 10 <= seconds_until_refresh(kindle) <= TWELVE_HOURS
+
+
+def test_next_wakeup_after_failure_is_retry_minutes(kindle: FakeKindle) -> None:
+    kindle.serve(b"not an image")
+    refresh_result(kindle)
+    assert ONE_HOUR - 10 <= seconds_until_refresh(kindle) <= ONE_HOUR
+
+
+def test_refresh_without_wifi_fails_and_switches_wifi_back_off(tmp_path: Path) -> None:
+    kindle = FakeKindle(tmp_path, wifi_state="NA")
+    kindle.run_with_library("WIFI_TIMEOUT_SECONDS=2; refresh_edition")
+    calls = kindle.calls()
+    assert "lipc-set-prop com.lab126.cmd wirelessEnable 1" in calls
+    assert calls[-1] == "lipc-set-prop com.lab126.cmd wirelessEnable 0"
+    assert not kindle.image_file.exists()
+
+
+def test_daemon_paints_sleep_screen_and_sets_rtc_wakeup(kindle: FakeKindle) -> None:
+    refresh_result(kindle)
+    kindle.powerd_events(["goingToScreenSaver", "readyToSuspend"])
+    completed = kindle.run_daemon()
+    assert completed.returncode == 0, completed.stderr
+    calls = kindle.calls()
+    assert f"eips -f -g {kindle.image_file}" in calls
+    wakeups = [call for call in calls if "rtcWakeup" in call]
+    assert len(wakeups) == 1
+    assert TWELVE_HOURS - 10 <= int(wakeups[0].split()[-1]) <= TWELVE_HOURS
+
+
+def test_daemon_shows_start_image_until_first_download(kindle: FakeKindle) -> None:
+    (kindle.install_home / "startbild.png").write_bytes(PNG_BYTES)
+    kindle.powerd_events(["goingToScreenSaver"])
+    kindle.run_daemon()
+    assert kindle.image_file.read_bytes() == PNG_BYTES
+    assert f"eips -f -g {kindle.image_file}" in kindle.calls()
+
+
+def test_daemon_logs_every_event(kindle: FakeKindle) -> None:
+    kindle.powerd_events(["readyToSuspend", "wakeupFromSuspend"])
+    kindle.run_daemon()
+    log = (kindle.data_dir / "konzertkalender.log").read_text()
+    assert "Ereignis: readyToSuspend" in log
+    assert "Ereignis: wakeupFromSuspend" in log
+
+
+def test_daemon_opens_page_when_user_wakes_the_kindle(kindle: FakeKindle) -> None:
+    kindle.powerd_events(["outOfScreenSaver"])
+    kindle.run_daemon()
+    assert any(
+        call.startswith("lipc-set-prop com.lab126.appmgrd start app://com.lab126.browser")
+        for call in kindle.calls()
+    )
+
+
+def test_daemon_skips_download_on_wakeup_when_not_due(kindle: FakeKindle) -> None:
+    refresh_result(kindle)
+    attempt_before = (kindle.data_dir / "last_attempt").read_text()
+    kindle.powerd_events(["wakeupFromSuspend"])
+    kindle.run_daemon()
+    assert (kindle.data_dir / "last_attempt").read_text() == attempt_before
+
+
+def test_daemon_downloads_on_wakeup_when_due(kindle: FakeKindle) -> None:
+    kindle.powerd_events(["wakeupFromSuspend"])
+    kindle.run_daemon()
+    assert kindle.image_file.read_bytes() == PNG_BYTES
+    assert f"eips -f -g {kindle.image_file}" in kindle.calls()

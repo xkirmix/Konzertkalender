@@ -1,0 +1,115 @@
+# Genre-Wortliste für die Genre-Erkennung.
+#
+# Jede Zeile: "Anzeigename" = { stems = [...], mode = "...", ... }
+#   stems     Wortstämme (klein, ohne Akzente/Umlaute-Sorgen: é/ä werden automatisch angeglichen)
+#   mode      "word"     = ganzes Wort (auch mit Plural-s)
+#             "suffix"   = Wortende, z.B. "rock" erkennt Punkrock, Krautrock
+#             "prefix"   = Wortanfang, z.B. "indie" erkennt Indiepop, Indietronica
+#             "contains" = irgendwo im Wort
+#   dance     true = typische Party-/Clubmusik (hilft bei der Unterscheidung Konzert/Party)
+#   tag_only  true = nur in Genre-Listen der Clubs erkennen, nicht in Beschreibungstexten
+#   exclude   Wörter, die trotz Treffer KEIN Genre sind
+#   name      optionaler Anzeigename, falls er vom Schlüssel abweicht
+#
+# Reihenfolge zählt: der erste passende Eintrag gewinnt (spezifische Begriffe zuerst).
+
+[genres]
+"Krautrock" = { stems = ["krautrock"], mode = "word" }
+"Post-Rock" = { stems = ["postrock"], mode = "word" }
+"Post-Punk" = { stems = ["postpunk"], mode = "word" }
+"Punkrock" = { stems = ["punkrock"], mode = "word", name = "Punk" }
+"Rockabilly" = { stems = ["rockabilly"], mode = "word" }
+"Rock'n'Roll" = { stems = ["rocknroll"], mode = "word" }
+"Rock" = { stems = ["rock"], mode = "suffix" }
+"Punk" = { stems = ["punk"], mode = "suffix" }
+"Pop" = { stems = ["pop"], mode = "suffix", exclude = ["lollipop"] }
+"Indie" = { stems = ["indie"], mode = "prefix", exclude = ["indien", "indiens"] }
+"Metal" = { stems = ["metal"], mode = "suffix" }
+"Hardcore" = { stems = ["hardcore"], mode = "suffix" }
+"Jazz" = { stems = ["jazz"], mode = "contains" }
+"Blues" = { stems = ["blues"], mode = "suffix" }
+"Folk" = { stems = ["folk"], mode = "suffix" }
+"Soul" = { stems = ["soul"], mode = "suffix" }
+"Funk" = { stems = ["funk", "afrofunk", "discofunk", "electrofunk"], mode = "word" }
+"Disco" = { stems = ["disco"], mode = "suffix", dance = true }
+"House" = { stems = ["house"], mode = "suffix", dance = true, exclude = ["warehouse", "clubhouse", "jailhouse", "greenhouse", "powerhouse"] }
+"Techno" = { stems = ["techno"], mode = "suffix", dance = true }
+"Trance" = { stems = ["trance"], mode = "suffix", dance = true }
+"Drum & Bass" = { stems = ["drumandbass", "drumnbass", "dnb"], mode = "word", dance = true }
+"Bass" = { stems = ["bass", "bassmusic"], mode = "word", dance = true, tag_only = true }
+"Dubstep" = { stems = ["dubstep"], mode = "word", dance = true }
+"Dub" = { stems = ["dub", "dubwise"], mode = "word" }
+"Reggaeton" = { stems = ["reggaeton"], mode = "word", dance = true }
+"Reggae" = { stems = ["reggae"], mode = "suffix" }
+"Dancehall" = { stems = ["dancehall"], mode = "word", dance = true }
+"Ska" = { stems = ["ska"], mode = "word" }
+"Hip-Hop" = { stems = ["hiphop"], mode = "word" }
+"Trap" = { stems = ["trap"], mode = "word", tag_only = true }
+"Rap" = { stems = ["rap"], mode = "suffix" }
+"Rapper" = { stems = ["rapper", "rapperin", "rapperinnen", "rappeuse"], mode = "word", name = "Rap" }
+"R&B" = { stems = ["rnb"], mode = "word" }
+"Electronic" = { stems = ["electro", "elektro", "electron", "elektron"], mode = "prefix" }
+"Experimental" = { stems = ["experiment"], mode = "prefix" }
+"Avantgarde" = { stems = ["avantgard"], mode = "prefix" }
+"Ambient" = { stems = ["ambient"], mode = "word" }
+"Noise" = { stems = ["noise"], mode = "suffix" }
+"Drone" = { stems = ["drone"], mode = "word" }
+"Wave" = { stems = ["wave"], mode = "suffix", exclude = ["microwave"] }
+"Shoegaze" = { stems = ["shoegaze"], mode = "prefix" }
+"Psychedelic" = { stems = ["psychedel"], mode = "prefix" }
+"Psych" = { stems = ["psych"], mode = "word" }
+"Prog" = { stems = ["prog", "progrock", "progressive", "progressiv"], mode = "word" }
+"Garage" = { stems = ["garage"], mode = "word" }
+"Grunge" = { stems = ["grunge"], mode = "word" }
+"Emo" = { stems = ["emo", "emocore"], mode = "word" }
+"Singer-Songwriter" = { stems = ["songwriter", "songwriterin"], mode = "suffix" }
+"Liedermacher" = { stems = ["liedermacher"], mode = "prefix", name = "Singer-Songwriter" }
+"Chanson" = { stems = ["chanson"], mode = "prefix" }
+"Schlager" = { stems = ["schlager"], mode = "suffix" }
+"Mundart" = { stems = ["mundart"], mode = "prefix" }
+"Volksmusik" = { stems = ["volksmusik"], mode = "suffix" }
+"Jodel" = { stems = ["jodel"], mode = "prefix", name = "Volksmusik" }
+"Klassik" = { stems = ["klassik", "classical", "classique"], mode = "suffix" }
+"Orchester" = { stems = ["orchester", "orchestra", "kammermusik", "sinfoni", "symphon"], mode = "contains", name = "Klassik" }
+"Improvisation" = { stems = ["improvis"], mode = "prefix" }
+"Improv" = { stems = ["improv"], mode = "word", name = "Improvisation" }
+"Latin" = { stems = ["latin"], mode = "prefix" }
+"Salsa" = { stems = ["salsa"], mode = "word" }
+"Cumbia" = { stems = ["cumbia"], mode = "word" }
+"Afrobeat" = { stems = ["afrobeat"], mode = "prefix", dance = true }
+"Afro" = { stems = ["afro"], mode = "prefix" }
+"Amapiano" = { stems = ["amapiano"], mode = "word", dance = true }
+"Balkan" = { stems = ["balkan"], mode = "prefix" }
+"Klezmer" = { stems = ["klezmer"], mode = "word" }
+"Tango" = { stems = ["tango"], mode = "word" }
+"Swing" = { stems = ["swing", "electroswing"], mode = "word" }
+"Bossa Nova" = { stems = ["bossa"], mode = "prefix" }
+"Breaks" = { stems = ["breaks", "breakbeat"], mode = "word", dance = true, tag_only = true }
+"Jungle" = { stems = ["jungle"], mode = "word", dance = true, tag_only = true }
+"Hardstyle" = { stems = ["hardstyle"], mode = "word", dance = true }
+"Jumpstyle" = { stems = ["jumpstyle"], mode = "word", dance = true }
+"Gabber" = { stems = ["gabber"], mode = "word", dance = true }
+"Dance" = { stems = ["dance"], mode = "suffix", dance = true, tag_only = true }
+"Industrial" = { stems = ["industrial"], mode = "word" }
+"EBM" = { stems = ["ebm"], mode = "word" }
+"Minimal" = { stems = ["minimal"], mode = "word", dance = true, tag_only = true }
+"Acid" = { stems = ["acid"], mode = "word", dance = true, tag_only = true }
+"Groove" = { stems = ["groove"], mode = "suffix", dance = true, tag_only = true }
+"Lo-Fi" = { stems = ["lofi"], mode = "word" }
+"Trip-Hop" = { stems = ["triphop"], mode = "word" }
+"Downtempo" = { stems = ["downtempo", "chillout"], mode = "word" }
+"Gospel" = { stems = ["gospel"], mode = "word" }
+"Country" = { stems = ["country"], mode = "word", tag_only = true }
+"Americana" = { stems = ["americana", "bluegrass"], mode = "word" }
+"Doom" = { stems = ["doom"], mode = "word" }
+"Stoner" = { stems = ["stoner"], mode = "prefix" }
+"Goth" = { stems = ["goth"], mode = "prefix", exclude = ["gotthard", "gotthelf"] }
+"Glam" = { stems = ["glam"], mode = "suffix" }
+"Synth" = { stems = ["synth"], mode = "word", tag_only = true }
+"Acoustic" = { stems = ["acoustic", "akustik", "unplugged"], mode = "word", tag_only = true }
+"Hits" = { stems = ["hits", "charts", "oldies"], mode = "word", dance = true, tag_only = true }
+"60s" = { stems = ["60s", "60er"], mode = "word", dance = true, tag_only = true }
+"70s" = { stems = ["70s", "70er"], mode = "word", dance = true, tag_only = true }
+"80s" = { stems = ["80s", "80er"], mode = "word", dance = true, tag_only = true }
+"90s" = { stems = ["90s", "90er"], mode = "word", dance = true, tag_only = true }
+"00s" = { stems = ["00s", "00er", "2000s", "2000er"], mode = "word", dance = true, tag_only = true }

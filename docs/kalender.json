@@ -1,0 +1,223 @@
+{
+  "erstellt": "2026-11-20T19:10+01:00",
+  "wochenende": {
+    "von": "2026-11-19",
+    "bis": "2026-11-21"
+  },
+  "abende": {
+    "2026-11-19": [],
+    "2026-11-20": [
+      {
+        "club": "Bad Bonn",
+        "titel": "Akroasis, Ghoast, Comaniac",
+        "beginn": "2026-11-20T20:00+01:00",
+        "datum": "2026-11-20",
+        "art": "konzert",
+        "genres": [
+          "Metal",
+          "Stoner",
+          "Prog"
+        ],
+        "link": "https://club.badbonn.ch/archive/2026/akroasis-ghoast-comaniac"
+      },
+      {
+        "club": "Nouveau Monde",
+        "titel": "Ici d'Ici #23 Leti SV + Raïmé +Victims of the Scavenger's Daughter + NACRE",
+        "beginn": "2026-11-20T20:30+01:00",
+        "datum": "2026-11-20",
+        "art": "konzert",
+        "genres": [
+          "Gospel",
+          "Pop",
+          "Rap"
+        ],
+        "link": "https://www.nouveaumonde.ch/agenda/ici-dici-23/"
+      },
+      {
+        "club": "Dachstock",
+        "titel": "«Dominic» Album Release Show",
+        "beginn": "2026-11-20T21:00+01:00",
+        "datum": "2026-11-20",
+        "art": "konzert",
+        "genres": [
+          "Pop",
+          "Indie",
+          "Mundart"
+        ],
+        "link": "https://dachstock.ch/events/20-11-2026-edb-dominic-album-release-show"
+      },
+      {
+        "club": "PROGR Aula",
+        "titel": "Salsa im Progr",
+        "beginn": "2026-11-20T21:30+01:00",
+        "datum": "2026-11-20",
+        "art": "party",
+        "genres": [],
+        "link": "https://www.progr.ch/de/agenda/salsa-im-progr-8097/"
+      },
+      {
+        "club": "PROGR Turnhalle",
+        "titel": "FREQUENZ w/ DAAEERU & GIANUNDSO [AF•FEKT]",
+        "beginn": "2026-11-20T22:00+01:00",
+        "datum": "2026-11-20",
+        "art": "party",
+        "genres": [
+          "House"
+        ],
+        "link": "https://www.progr.ch/de/agenda/frequenz-w-daaeeru-gianundso-afbfekt-8763/"
+      },
+      {
+        "club": "Cafete",
+        "titel": "Hexagon",
+        "beginn": "2026-11-20T23:00+01:00",
+        "datum": "2026-11-20",
+        "art": "party",
+        "genres": [
+          "Techno",
+          "Hardgroove",
+          "Speedhouse"
+        ],
+        "link": "https://cafete.ch/"
+      },
+      {
+        "club": "Gaskessel",
+        "titel": "ULTRA DANCE w/ Lolalita (BEL)",
+        "beginn": "2026-11-20T23:00+01:00",
+        "datum": "2026-11-20",
+        "art": "party",
+        "genres": [
+          "Jumpstyle",
+          "Hard Dance",
+          "Hardcore"
+        ],
+        "link": "https://gaskessel.ch/programm/ultra-dance-nov/"
+      },
+      {
+        "club": "ISC",
+        "titel": "030 BERN – Bovskey + Carlo Coke + GALOPP",
+        "beginn": "2026-11-20T23:00+01:00",
+        "datum": "2026-11-20",
+        "art": "party",
+        "genres": [
+          "House",
+          "Baile House",
+          "Techno"
+        ],
+        "link": "https://isc-club.ch/programm/bovskey-carlo-coke-galopp/"
+      }
+    ],
+    "2026-11-21": [
+      {
+        "club": "Fri-Son",
+        "titel": "MARIA BC (US)",
+        "beginn": "2026-11-21T20:00+01:00",
+        "datum": "2026-11-21",
+        "art": "konzert",
+        "genres": [
+          "Ambient Folk",
+          "Dream Pop",
+          "Slowcore"
+        ],
+        "link": "https://www.fri-son.ch/de/evenement/maria-bc"
+      },
+      {
+        "club": "Cafete",
+        "titel": "Bubbbbbles",
+        "beginn": "2026-11-21T23:00+01:00",
+        "datum": "2026-11-21",
+        "art": "party",
+        "genres": [
+          "Techno",
+          "Breaks"
+        ],
+        "link": "https://cafete.ch/"
+      },
+      {
+        "club": "Gaskessel",
+        "titel": "Somnia w/ Grace Dahl (NL)",
+        "beginn": "2026-11-21T23:00+01:00",
+        "datum": "2026-11-21",
+        "art": "party",
+        "genres": [
+          "Techno"
+        ],
+        "link": "https://gaskessel.ch/programm/somnia-grace-dahl/"
+      },
+      {
+        "club": "ISC",
+        "titel": "Trillenium",
+        "beginn": "2026-11-21T23:00+01:00",
+        "datum": "2026-11-21",
+        "art": "party",
+        "genres": [
+          "Hits",
+          "Hip Hop",
+          "Electroclash"
+        ],
+        "link": "https://isc-club.ch/programm/trillenium-2/"
+      }
+    ]
+  },
+  "quellen": [
+    {
+      "club": "Dachstock",
+      "events": 20,
+      "ok": true,
+      "fehler": null
+    },
+    {
+      "club": "Gaskessel",
+      "events": 52,
+      "ok": true,
+      "fehler": null
+    },
+    {
+      "club": "ISC",
+      "events": 25,
+      "ok": true,
+      "fehler": null
+    },
+    {
+      "club": "Rössli",
+      "events": 28,
+      "ok": true,
+      "fehler": null
+    },
+    {
+      "club": "Cafete",
+      "events": 16,
+      "ok": true,
+      "fehler": null
+    },
+    {
+      "club": "Café Kairo",
+      "events": 18,
+      "ok": true,
+      "fehler": null
+    },
+    {
+      "club": "PROGR",
+      "events": 58,
+      "ok": true,
+      "fehler": null
+    },
+    {
+      "club": "Bad Bonn",
+      "events": 23,
+      "ok": true,
+      "fehler": null
+    },
+    {
+      "club": "Fri-Son",
+      "events": 25,
+      "ok": true,
+      "fehler": null
+    },
+    {
+      "club": "Nouveau Monde",
+      "events": 52,
+      "ok": true,
+      "fehler": null
+    }
+  ]
+}

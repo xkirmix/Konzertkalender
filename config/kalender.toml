@@ -1,0 +1,32 @@
+# Einstellungen für den Konzertkalender.
+# Nach einer Änderung einfach committen – das nächste Montags-Update übernimmt sie.
+
+[kalender]
+titel = "Bern & Fribourg"
+zeitzone = "Europe/Zurich"
+
+# Events ab dieser Uhrzeit zählen zum Abend (früher = z.B. Workshops, Märkte -> ausgeblendet)
+abend_ab_stunde = 17
+# Events, die nach Mitternacht bis zu dieser Uhrzeit beginnen, zählen zum Vorabend
+nacht_bis_stunde = 5
+
+# Welche Arten angezeigt werden: "konzert", "party" (inkl. DJ-Sets), "andere" (Lesungen, Theater ...)
+arten = ["konzert", "party"]
+
+# Aktive Clubs. Verfügbar: dachstock, gaskessel, isc, roessli, cafete, cafe_kairo, progr,
+#                          bad_bonn, fri_son, nouveau_monde
+clubs = [
+    "dachstock",
+    "gaskessel",
+    "isc",
+    "roessli",
+    "cafete",
+    "cafe_kairo",
+    "progr",
+    "bad_bonn",
+    "fri_son",
+    "nouveau_monde",
+]
+
+# Wortliste für die Genre-Erkennung (relativ zu diesem Ordner)
+genre_datei = "genres.toml"

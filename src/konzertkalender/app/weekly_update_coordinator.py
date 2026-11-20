@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 from collections.abc import Callable, Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import date, datetime
 from pathlib import Path
 from typing import Protocol
@@ -90,6 +90,6 @@ class WeeklyUpdateCoordinator:
                 LOGGER.warning("%s konnte nicht gelesen werden: %s", source.venue_name, error)
                 statuses.append(SourceStatus(source.venue_name, error=f"{type(error).__name__}: {error}"))
                 continue
-            events.extend(found)
+            events.extend(replace(event, club=event.club or source.venue_name) for event in found)
             statuses.append(SourceStatus(source.venue_name, event_count=len(found)))
         return events, statuses

@@ -1,4 +1,5 @@
-"""The complete list of the weekend's events as plain HTML, every event linking to its page on the
+"""The complete list of the weekend's events as plain HTML, grouped like the image (evening, then
+club), every event linking to its page on the
 venue's website. Reached from the calendar page (footer, "+ N weitere"), so nothing is lost when the
 image has to shorten titles or leave out events of a very full evening.
 
@@ -12,6 +13,7 @@ from html import escape
 
 from konzertkalender.domain.event import Event
 from konzertkalender.domain.weekend_program import WeekendProgram
+from konzertkalender.rendering.club_grouping import ClubGrouping
 from konzertkalender.rendering.event_text_formatter import EventTextFormatter
 from konzertkalender.rendering.footer_info import FooterInfo
 from konzertkalender.rendering.german_labels import GermanCalendarLabels
@@ -22,13 +24,17 @@ body{font-family:sans-serif;margin:0 auto;max-width:46em;padding:.8em 1em 2em;co
 h1{font-size:1.3em;margin:.2em 0 .4em}
 .back{display:inline-block;color:#000;font-weight:bold;padding:.4em 0}
 h2{background:#000;color:#fff;font-size:1.05em;letter-spacing:.05em;padding:.4em .6em;margin:1.1em 0 .2em}
-a.event{display:block;color:#000;text-decoration:none;border-bottom:1px solid #aaa;padding:.65em .2em}
-.time{display:inline-block;width:3.6em;font-weight:bold}
+table{width:100%;border-collapse:collapse}
+td{vertical-align:top;padding:.55em .3em}
+tr.club td{border-top:2px solid #999}
+tr.first td{border-top:0}
+td.club{font-weight:bold;width:7em}
+td.time{font-weight:bold;text-align:right;white-space:nowrap;width:3.2em}
+a{color:#000;text-decoration:none}
 .title{font-weight:bold}
-.meta{display:block;margin-left:3.6em;color:#444;font-size:.92em}
-.venue{font-weight:bold;color:#222}
-.empty{color:#666;padding:.6em .2em}
-.footer{color:#555;font-size:.85em;margin-top:1.5em}
+.meta{display:block;color:#222;font-weight:bold;font-size:.9em}
+.empty{color:#333;padding:.6em .2em}
+.footer{color:#333;font-size:.85em;margin-top:1.5em}
 """
 
 
@@ -36,6 +42,7 @@ class EventListPageBuilder:
     def __init__(self, title: str, formatter: EventTextFormatter, back_href: str = "./") -> None:
         self._title = title
         self._formatter = formatter
+        self._club_grouping = ClubGrouping(formatter)
         self._back_href = back_href
 
     def build(self, program: WeekendProgram, footer: FooterInfo) -> str:
@@ -55,15 +62,21 @@ class EventListPageBuilder:
 
     def _evening_section(self, program: WeekendProgram, evening) -> str:
         events = program.events_on(evening)
-        heading = escape(GermanCalendarLabels.evening_heading(evening).upper())
-        body = "\n".join(self._event_link(event) for event in events) or '<div class="empty">Nichts gefunden</div>'
-        return f"<h2>{heading}</h2>\n{body}"
+        heading = f"<h2>{escape(GermanCalendarLabels.evening_heading(evening).upper())}</h2>"
+        if not events:
+            return f'{heading}\n<div class="empty">Nichts gefunden</div>'
+        starts = self._club_grouping.group_starts(events)
+        rows = [self._event_row(event, start, index == 0) for index, (event, start) in enumerate(zip(events, starts))]
+        return f"{heading}\n<table>\n" + "\n".join(rows) + "\n</table>"
 
-    def _event_link(self, event: Event) -> str:
+    def _event_row(self, event: Event, starts_club: bool, is_first: bool) -> str:
+        """Club (first event of a club only) | title and room/kind/genres, linked | start time."""
+        row_class = " first" if is_first else ""
+        club = escape(self._formatter.club_label(event)) if starts_club else ""
         href = escape(event.url or "#", quote=True)
         return (
-            f'<a class="event" href="{href}"><span class="time">{escape(self._formatter.time_label(event))}</span>'
-            f'<span class="title">{escape(event.title)}</span>'
-            f'<span class="meta"><span class="venue">{escape(self._formatter.venue_label(event))}</span>'
-            f"{escape(self._formatter.details_label(event))} ›</span></a>"
+            f'<tr class="{"club" if starts_club else "more"}{row_class}"><td class="club">{club}</td>'
+            f'<td><a href="{href}"><span class="title">{escape(event.title)}</span>'
+            f'<span class="meta">{escape(self._formatter.details_label(event))} ›</span></a></td>'
+            f'<td class="time">{escape(self._formatter.time_label(event))}</td></tr>'
         )

@@ -27,8 +27,8 @@ FOOTER = FooterInfo(datetime(2026, 11, 23, 6, 0, tzinfo=ZURICH), ("ISC",), ())
 LINK = re.compile(r'<a href="([^"]+)" title="[^"]*" style="top:([\d.]+)%;height:([\d.]+)%">')
 
 
-def concert(title: str, day: int, **extra) -> Event:
-    return Event(venue="ISC", title=title, starts_at=datetime(2026, 11, day, 20, 0, tzinfo=ZURICH),
+def concert(title: str, day: int, hour: int = 20, **extra) -> Event:
+    return Event(venue=extra.pop("venue", "ISC"), title=title, starts_at=datetime(2026, 11, day, hour, 0, tzinfo=ZURICH),
                  kind=extra.pop("kind", EventKind.CONCERT), **extra)
 
 
@@ -83,5 +83,36 @@ def test_publisher_writes_image_page_list_and_data(tmp_path, weekend):
 
 def test_one_line_rows_name_the_kind_only_when_genres_are_missing():
     formatter = EventTextFormatter()
-    assert formatter.compact_details_label(concert("A", 27, genres=("Punk", "Garage"))) == " · Punk, Garage"
-    assert formatter.compact_details_label(concert("B", 27, kind=EventKind.PARTY)) == " · Party"
+    assert formatter.compact_details_label(concert("A", 27, genres=("Punk", "Garage"))) == "Punk, Garage"
+    assert formatter.compact_details_label(concert("B", 27, kind=EventKind.PARTY)) == "Party"
+
+
+def test_room_inside_a_club_is_named_before_kind_and_genres():
+    formatter = EventTextFormatter()
+    turnhalle = concert("C", 27, venue="PROGR Turnhalle", club="PROGR", kind=EventKind.PARTY, genres=("House",))
+    partner = concert("D", 27, venue="bee-flat (PROGR)", club="PROGR")
+    assert formatter.details_label(turnhalle) == "Turnhalle · Party · House"
+    assert formatter.room_label(partner) == "bee-flat"
+    assert formatter.room_label(concert("E", 27, club="ISC")) == ""
+    assert formatter.club_label(turnhalle) == "PROGR"
+
+
+def test_evening_is_sorted_by_club_order_then_time(weekend):
+    events = [concert("Late ISC", 27, 23, club="ISC"), concert("Dachstock", 27, 21, venue="Dachstock"),
+              concert("Early ISC", 27, 20, club="ISC"), concert("Elsewhere", 27, 19, venue="Unbekannt")]
+    program = EventSelectionManager({EventKind.CONCERT}, ["ISC", "Dachstock"]).select(events, weekend)
+    titles = [event.title for event in program.events_on(datetime(2026, 11, 27).date())]
+    assert titles == ["Early ISC", "Late ISC", "Dachstock", "Elsewhere"]
+
+
+def test_club_name_heads_only_the_first_event_of_each_club(weekend):
+    events = [concert("A", 27, 20, club="ISC"), concert("B", 27, 23, club="ISC"),
+              concert("C", 27, 21, venue="Dachstock", url="https://dachstock.ch/c")]
+    program = EventSelectionManager({EventKind.CONCERT}, ["ISC", "Dachstock"]).select(events, weekend)
+    theme = CalendarTheme()
+    fonts, fitter, formatter = FontProvider(theme.fonts), TextFitter(), EventTextFormatter()
+    layout = CalendarLayoutPlanner(theme, fonts, fitter, formatter).plan(program)
+    friday = next(block for block in layout.blocks if block.rows)
+    assert [row.club_label for row in friday.rows] == ["ISC", "", "Dachstock"]
+    page = EventListPageBuilder("Bern", formatter).build(program, FOOTER)
+    assert page.count('<td class="club">ISC</td>') == 1 and page.count('<td class="club"></td>') == 1

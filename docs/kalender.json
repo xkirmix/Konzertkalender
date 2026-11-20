@@ -1,5 +1,5 @@
 {
-  "erstellt": "2026-11-20T20:46+01:00",
+  "erstellt": "2026-11-20T20:56+01:00",
   "wochenende": {
     "von": "2026-11-19",
     "bis": "2026-11-21"
@@ -7,32 +7,6 @@
   "abende": {
     "2026-11-19": [],
     "2026-11-20": [
-      {
-        "club": "Bad Bonn",
-        "titel": "Akroasis, Ghoast, Comaniac",
-        "beginn": "2026-11-20T20:00+01:00",
-        "datum": "2026-11-20",
-        "art": "konzert",
-        "genres": [
-          "Metal",
-          "Stoner",
-          "Prog"
-        ],
-        "link": "https://club.badbonn.ch/archive/2026/akroasis-ghoast-comaniac"
-      },
-      {
-        "club": "Nouveau Monde",
-        "titel": "Ici d’Ici #23 Leti SV + Raïmé +Victims of the Scavenger's Daughter + NACRE",
-        "beginn": "2026-11-20T20:30+01:00",
-        "datum": "2026-11-20",
-        "art": "konzert",
-        "genres": [
-          "Gospel",
-          "Pop",
-          "Rap"
-        ],
-        "link": "https://www.nouveaumonde.ch/agenda/ici-dici-23/"
-      },
       {
         "club": "Dachstock",
         "titel": "«Dominic» Album Release Show",
@@ -45,39 +19,6 @@
           "Mundart"
         ],
         "link": "https://dachstock.ch/events/20-11-2026-edb-dominic-album-release-show"
-      },
-      {
-        "club": "PROGR Aula",
-        "titel": "Salsa im Progr",
-        "beginn": "2026-11-20T21:30+01:00",
-        "datum": "2026-11-20",
-        "art": "party",
-        "genres": [],
-        "link": "https://www.progr.ch/de/agenda/salsa-im-progr-8097/"
-      },
-      {
-        "club": "PROGR Turnhalle",
-        "titel": "FREQUENZ w/ DAAEERU & GIANUNDSO [AF•FEKT]",
-        "beginn": "2026-11-20T22:00+01:00",
-        "datum": "2026-11-20",
-        "art": "party",
-        "genres": [
-          "House"
-        ],
-        "link": "https://www.progr.ch/de/agenda/frequenz-w-daaeeru-gianundso-afbfekt-8763/"
-      },
-      {
-        "club": "Cafete",
-        "titel": "Hexagon",
-        "beginn": "2026-11-20T23:00+01:00",
-        "datum": "2026-11-20",
-        "art": "party",
-        "genres": [
-          "Techno",
-          "Hardgroove",
-          "Speedhouse"
-        ],
-        "link": "https://cafete.ch/"
       },
       {
         "club": "Gaskessel",
@@ -104,34 +45,68 @@
           "Techno"
         ],
         "link": "https://isc-club.ch/programm/bovskey-carlo-coke-galopp/"
-      }
-    ],
-    "2026-11-21": [
-      {
-        "club": "Fri-Son",
-        "titel": "MARIA BC (US)",
-        "beginn": "2026-11-21T20:00+01:00",
-        "datum": "2026-11-21",
-        "art": "konzert",
-        "genres": [
-          "Ambient Folk",
-          "Dream Pop",
-          "Slowcore"
-        ],
-        "link": "https://www.fri-son.ch/de/evenement/maria-bc"
       },
       {
         "club": "Cafete",
-        "titel": "Bubbbbbles",
-        "beginn": "2026-11-21T23:00+01:00",
-        "datum": "2026-11-21",
+        "titel": "Hexagon",
+        "beginn": "2026-11-20T23:00+01:00",
+        "datum": "2026-11-20",
         "art": "party",
         "genres": [
           "Techno",
-          "Breaks"
+          "Hardgroove",
+          "Speedhouse"
         ],
         "link": "https://cafete.ch/"
       },
+      {
+        "club": "PROGR Aula",
+        "titel": "Salsa im Progr",
+        "beginn": "2026-11-20T21:30+01:00",
+        "datum": "2026-11-20",
+        "art": "party",
+        "genres": [],
+        "link": "https://www.progr.ch/de/agenda/salsa-im-progr-8097/"
+      },
+      {
+        "club": "PROGR Turnhalle",
+        "titel": "FREQUENZ w/ DAAEERU & GIANUNDSO [AF•FEKT]",
+        "beginn": "2026-11-20T22:00+01:00",
+        "datum": "2026-11-20",
+        "art": "party",
+        "genres": [
+          "House"
+        ],
+        "link": "https://www.progr.ch/de/agenda/frequenz-w-daaeeru-gianundso-afbfekt-8763/"
+      },
+      {
+        "club": "Bad Bonn",
+        "titel": "Akroasis, Ghoast, Comaniac",
+        "beginn": "2026-11-20T20:00+01:00",
+        "datum": "2026-11-20",
+        "art": "konzert",
+        "genres": [
+          "Metal",
+          "Stoner",
+          "Prog"
+        ],
+        "link": "https://club.badbonn.ch/archive/2026/akroasis-ghoast-comaniac"
+      },
+      {
+        "club": "Nouveau Monde",
+        "titel": "Ici d'Ici #23 Leti SV + Raïmé +Victims of the Scavenger's Daughter + NACRE",
+        "beginn": "2026-11-20T20:30+01:00",
+        "datum": "2026-11-20",
+        "art": "konzert",
+        "genres": [
+          "Gospel",
+          "Pop",
+          "Rap"
+        ],
+        "link": "https://www.nouveaumonde.ch/agenda/ici-dici-23/"
+      }
+    ],
+    "2026-11-21": [
       {
         "club": "Gaskessel",
         "titel": "Somnia w/ Grace Dahl (NL)",
@@ -155,6 +130,31 @@
           "Electroclash"
         ],
         "link": "https://isc-club.ch/programm/trillenium-2/"
+      },
+      {
+        "club": "Cafete",
+        "titel": "Bubbbbbles",
+        "beginn": "2026-11-21T23:00+01:00",
+        "datum": "2026-11-21",
+        "art": "party",
+        "genres": [
+          "Techno",
+          "Breaks"
+        ],
+        "link": "https://cafete.ch/"
+      },
+      {
+        "club": "Fri-Son",
+        "titel": "MARIA BC (US)",
+        "beginn": "2026-11-21T20:00+01:00",
+        "datum": "2026-11-21",
+        "art": "konzert",
+        "genres": [
+          "Ambient Folk",
+          "Dream Pop",
+          "Slowcore"
+        ],
+        "link": "https://www.fri-son.ch/de/evenement/maria-bc"
       }
     ]
   },

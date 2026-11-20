@@ -1,8 +1,12 @@
-"""Filters, de-duplicates, sorts and groups events into the weekend program."""
+"""Filters, de-duplicates, sorts and groups events into the weekend program.
+
+Within an evening the events are ordered by club (in the configured order of the clubs), then by
+start time.
+"""
 
 from __future__ import annotations
 
-from collections.abc import Iterable
+from collections.abc import Iterable, Sequence
 from datetime import date
 
 from konzertkalender.domain.event import Event, EventKind
@@ -14,8 +18,9 @@ from konzertkalender.parsing.text_cleaning import TextCleaner
 class EventSelectionManager:
     """Keeps evening events of the configured kinds inside the window, one entry per event."""
 
-    def __init__(self, included_kinds: Iterable[EventKind]) -> None:
+    def __init__(self, included_kinds: Iterable[EventKind], club_order: Sequence[str] = ()) -> None:
         self._included_kinds = frozenset(included_kinds)
+        self._club_rank = {club: rank for rank, club in enumerate(club_order)}
 
     def select(self, events: Iterable[Event], window: WeekendWindow) -> WeekendProgram:
         relevant = [event for event in events if self._is_relevant(event, window)]
@@ -36,6 +41,6 @@ class EventSelectionManager:
             unique.setdefault(key, event)
         return list(unique.values())
 
-    @staticmethod
-    def _sort_key(event: Event) -> tuple[object, str, str]:
-        return (event.starts_at, event.venue, event.title)
+    def _sort_key(self, event: Event) -> tuple[object, ...]:
+        club = event.club or event.venue
+        return (self._club_rank.get(club, len(self._club_rank)), club, event.starts_at, event.title)

@@ -46,9 +46,10 @@ class ApplicationAssembler:
         config = self._config
         toolkit = SourceToolkitFactory.create(config, today=self._clock().date(), fetcher=self._fetcher)
         formatter = EventTextFormatter()
+        sources = VenueRegistry().build(config.venue_keys, toolkit)
         return WeeklyUpdateCoordinator(
-            sources=VenueRegistry().build(config.venue_keys, toolkit),
-            selection=EventSelectionManager(config.included_kinds),
+            sources=sources,
+            selection=EventSelectionManager(config.included_kinds, [source.venue_name for source in sources]),
             renderer=self._build_renderer(formatter),
             publisher=SitePublisher(
                 self._output_dir,

@@ -31,20 +31,23 @@ class CalendarTheme:
     # gray levels: 0 = black, 255 = white; e-ink needs strong contrast for small text
     ink: int = 0
     secondary_ink: int = 30
-    venue_ink: int = 0
+    club_ink: int = 0
     details_ink: int = 25
     muted_ink: int = 110
+    separator_ink: int = 150  # hairline between the clubs of an evening
     paper: int = 255
     footer_size: int = 22
     # event list
     heading_size: int = 31
-    time_size: int = 34
+    time_size: int = 30
     event_title_size: int = 34
     meta_size: int = 30
     heading_height_factor: float = 1.3
     row_gap: int = 10
     section_gap: int = 14
     inline_gap: int = 18
+    separator_width: int = 2
+    club_column_max_share: float = 0.3  # longer club names are shortened
     max_title_lines: int = 2
     max_scale: float = 1.0
     min_stacked_scale: float = 0.8  # below this, one line per event reads better than two small lines

@@ -11,7 +11,7 @@ from PIL import Image, ImageDraw
 from konzertkalender.domain.weekend_program import WeekendProgram
 from konzertkalender.rendering.calendar_layout import CalendarLayoutPlanner, EveningBlock
 from konzertkalender.rendering.calendar_theme import CalendarTheme
-from konzertkalender.rendering.event_row_builder import EventRow, RowStyle
+from konzertkalender.rendering.event_row_painter import EventRowPainter
 from konzertkalender.rendering.font_provider import FontProvider, FontRole
 from konzertkalender.rendering.footer_info import FooterInfo
 from konzertkalender.rendering.frame_geometry import GAP_ABOVE_FOOTER_TEXT, FrameGeometry
@@ -39,6 +39,7 @@ class KindleCalendarRenderer:
         self._theme = theme
         self._fonts = fonts
         self._meta_fonts = MetaFonts(fonts)
+        self._row_painter = EventRowPainter(theme, fonts)
         self._planner = planner
         self._fitter = fitter
         self._geometry = FrameGeometry(theme, fonts)
@@ -59,16 +60,18 @@ class KindleCalendarRenderer:
     def _draw_block(self, draw: ImageDraw.ImageDraw, block: EveningBlock, metrics: ScaledMetrics, top: int,
                     regions: list[LinkRegion]) -> int:
         y = self._draw_heading(draw, block, metrics, top)
-        for row in block.rows:
+        for index, row in enumerate(block.rows):
+            if index and row.starts_club_group:
+                self._row_painter.paint_separator(draw, y - metrics.row_gap / 2)
             row_top = y
-            y = self._draw_row(draw, row, metrics, y)
+            y = self._row_painter.paint(draw, row, metrics, y)
             regions.append(LinkRegion(RegionKind.EVENT, row_top, y, row.event))
         note = GermanCalendarLabels.hidden_events(block.hidden_count) if block.hidden_count else (
             EMPTY_EVENING_NOTE if not block.rows else "")
         if note:
             note_top = y
             note_font = self._fonts.get(FontRole.SEMIBOLD, metrics.meta_size)
-            draw.text((self._theme.margin + metrics.time_column_width, y), note, font=note_font,
+            draw.text((self._row_painter.text_x(metrics), y), note, font=note_font,
                       fill=self._theme.details_ink, anchor="la")
             y += metrics.meta_line_height + metrics.row_gap
             if block.hidden_count:
@@ -88,45 +91,6 @@ class KindleCalendarRenderer:
         count_font = self._fonts.get(FontRole.SEMIBOLD, round(metrics.heading_size * 0.85))
         draw.text((right - HEADING_PADDING, middle), count, font=count_font, fill=theme.paper, anchor="rm")
         return bottom + metrics.row_gap
-
-    def _draw_row(self, draw: ImageDraw.ImageDraw, row: EventRow, metrics: ScaledMetrics, top: int) -> int:
-        if row.style is RowStyle.INLINE:
-            return self._draw_inline_row(draw, row, metrics, top)
-        return self._draw_stacked_row(draw, row, metrics, top)
-
-    def _draw_stacked_row(self, draw: ImageDraw.ImageDraw, row: EventRow, metrics: ScaledMetrics, top: int) -> int:
-        """Time and title on the first line(s), venue · kind · genres below."""
-        theme = self._theme
-        text_x = theme.margin + metrics.time_column_width
-        time_font = self._fonts.get(FontRole.BOLD, metrics.time_size)
-        draw.text((theme.margin, top), row.time_label, font=time_font, fill=theme.ink, anchor="la")
-        title_font = self._fonts.get(FontRole.BOLD, metrics.event_title_size)
-        y = top
-        for line in row.title_lines:
-            draw.text((text_x, y), line, font=title_font, fill=theme.ink, anchor="la")
-            y += metrics.title_line_height
-        self._draw_meta(draw, row, metrics, text_x, y, anchor="la")
-        return y + metrics.meta_line_height + metrics.row_gap
-
-    def _draw_inline_row(self, draw: ImageDraw.ImageDraw, row: EventRow, metrics: ScaledMetrics, top: int) -> int:
-        """Everything on one baseline: time, title, then venue · kind · genres."""
-        theme = self._theme
-        text_x = theme.margin + metrics.time_column_width
-        baseline = top + metrics.title_ascent
-        time_font = self._fonts.get(FontRole.BOLD, metrics.time_size)
-        draw.text((theme.margin, baseline), row.time_label, font=time_font, fill=theme.ink, anchor="ls")
-        title_font = self._fonts.get(FontRole.BOLD, metrics.event_title_size)
-        draw.text((text_x, baseline), row.title_lines[0], font=title_font, fill=theme.ink, anchor="ls")
-        self._draw_meta(draw, row, metrics, text_x + row.meta_x_offset, baseline, anchor="ls")
-        return top + metrics.title_line_height + metrics.row_gap
-
-    def _draw_meta(self, draw: ImageDraw.ImageDraw, row: EventRow, metrics: ScaledMetrics,
-                   x: float, y: float, anchor: str) -> None:
-        venue_font = self._meta_fonts.venue(metrics.meta_size)
-        draw.text((x, y), row.venue_label, font=venue_font, fill=self._theme.venue_ink, anchor=anchor)
-        details_font = self._meta_fonts.details(metrics.meta_size)
-        details_x = x + venue_font.getlength(row.venue_label)
-        draw.text((details_x, y), row.details_label, font=details_font, fill=self._theme.details_ink, anchor=anchor)
 
     def _draw_footer(self, draw: ImageDraw.ImageDraw, footer: FooterInfo) -> None:
         theme = self._theme

@@ -95,7 +95,9 @@ So holt der Kindle neue Ausgaben:
 
 ## Anpassen
 
-- **Clubs, Abendbeginn, Arten** (`konzert`, `party`, `andere`): `config/kalender.toml`
+- **Clubs, Abendbeginn, Arten** (`konzert`, `party`, `andere`): `config/kalender.toml`. Pro Abend
+  stehen die Events nach Club gruppiert, in der Reihenfolge der Club-Liste dort, innerhalb eines
+  Clubs nach Uhrzeit.
 - **Genres:** `config/genres.toml`
 - **Neuer Club:** eine Klasse unter `src/konzertkalender/venues/<region>/` anlegen, die
   `VenueSource` erfüllt, in `venues/venue_registry.py` eintragen und einen Test mit Beispielseite

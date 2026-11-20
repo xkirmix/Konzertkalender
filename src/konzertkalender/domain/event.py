@@ -39,3 +39,4 @@ class Event:
     url: str | None = None
     has_start_time: bool = True
     is_cancelled: bool = False
+    club: str = ""  # the club whose program listed it, e.g. "PROGR" for "PROGR Turnhalle"

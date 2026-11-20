@@ -11,8 +11,10 @@ from collections.abc import Iterator
 from dataclasses import dataclass, replace
 from datetime import date
 
+from konzertkalender.domain.event import Event
 from konzertkalender.domain.weekend_program import WeekendProgram
 from konzertkalender.rendering.calendar_theme import CalendarTheme
+from konzertkalender.rendering.club_grouping import ClubGrouping
 from konzertkalender.rendering.event_row_builder import EventRow, EventRowBuilder, RowStyle
 from konzertkalender.rendering.event_text_formatter import EventTextFormatter
 from konzertkalender.rendering.font_provider import FontProvider
@@ -39,14 +41,18 @@ class CalendarLayoutPlanner:
         self, theme: CalendarTheme, fonts: FontProvider, fitter: TextFitter, formatter: EventTextFormatter
     ) -> None:
         self._theme = theme
+        self._formatter = formatter
+        self._club_grouping = ClubGrouping(formatter)
         self._metrics = MetricsCalculator(theme, fonts)
         self._rows = EventRowBuilder(theme, fonts, fitter, formatter)
         self._available_height = FrameGeometry(theme, fonts).content_height()
 
     def plan(self, program: WeekendProgram) -> CalendarLayout:
+        clubs = {self._formatter.club_label(event) for evening in program.window.evenings
+                 for event in program.events_on(evening)}
         layout: CalendarLayout | None = None
         for style, scale in self._attempts():
-            layout = self._layout(program, self._metrics.for_scale(scale), style)
+            layout = self._layout(program, self._metrics.for_scale(scale, clubs), style)
             if self.content_height(layout) <= self._available_height:
                 return layout
         return self._trim(layout)
@@ -70,11 +76,14 @@ class CalendarLayoutPlanner:
         return replace(layout, blocks=tuple(blocks))
 
     def _layout(self, program: WeekendProgram, metrics: ScaledMetrics, style: RowStyle) -> CalendarLayout:
-        blocks = tuple(
-            EveningBlock(evening, tuple(self._rows.build(event, metrics, style) for event in program.events_on(evening)))
-            for evening in program.window.evenings
-        )
+        blocks = tuple(EveningBlock(evening, self._evening_rows(program.events_on(evening), metrics, style))
+                       for evening in program.window.evenings)
         return CalendarLayout(metrics=metrics, blocks=blocks)
+
+    def _evening_rows(self, events: tuple[Event, ...], metrics: ScaledMetrics, style: RowStyle) -> tuple[EventRow, ...]:
+        """The club name only heads the first of its events."""
+        starts = self._club_grouping.group_starts(events)
+        return tuple(self._rows.build(event, metrics, style, starts_club_group=start) for event, start in zip(events, starts))
 
     def _attempts(self) -> Iterator[tuple[RowStyle, float]]:
         for scale in self._scales(self._theme.min_stacked_scale):

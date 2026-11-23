@@ -1,5 +1,5 @@
 {
-  "erstellt": "2026-11-23T14:48+01:00",
+  "erstellt": "2026-11-23T15:34+01:00",
   "wochenende": {
     "von": "2026-11-26",
     "bis": "2026-11-28"
@@ -56,18 +56,6 @@
           "Rock"
         ],
         "link": "https://www.cafe-kairo.ch/programm"
-      },
-      {
-        "club": "Fri-Son",
-        "titel": "SMUF PARTY - ANNÉES 2000",
-        "beginn": "2026-11-26T22:00+01:00",
-        "datum": "2026-11-26",
-        "art": "party",
-        "genres": [
-          "Années 2000",
-          "All-Styles"
-        ],
-        "link": "https://www.fri-son.ch/de/evenement/smuf-1"
       }
     ],
     "2026-11-27": [
@@ -257,18 +245,6 @@
         "link": "https://club.badbonn.ch/archive/2026/e-l-r-abraham"
       },
       {
-        "club": "Fri-Son",
-        "titel": "WOOD'HEART",
-        "beginn": "2026-11-28T22:00+01:00",
-        "datum": "2026-11-28",
-        "art": "konzert",
-        "genres": [
-          "Hip-Hop",
-          "Rap"
-        ],
-        "link": "https://www.fri-son.ch/de/evenement/woodheart-0"
-      },
-      {
         "club": "Nouveau Monde",
         "titel": "MYR (Vernissage) + Osmosis + Afterparty by Emery",
         "beginn": "2026-11-28T21:30+01:00",
@@ -334,9 +310,9 @@
     },
     {
       "club": "Fri-Son",
-      "events": 23,
-      "ok": true,
-      "fehler": null
+      "events": 0,
+      "ok": false,
+      "fehler": "PageFetchError: https://www.fri-son.ch/de/programm: 403 Client Error: Forbidden for url: https://www.fri-son.ch/de/programm"
     },
     {
       "club": "Nouveau Monde",

@@ -1,6 +1,6 @@
 # Konzertkalender
 
-Ein alter Kindle Paperwhite 4 als E-Ink-Konzertkalender. Jeden Montag holt GitHub automatisch die
+Ein alter Kindle Paperwhite 4 als E-Ink-Konzertkalender. Jeden Montag (und nochmals am Donnerstag) holt GitHub automatisch die
 Programme von zehn Clubs in Bern und Fribourg. Es wählt die Konzerte, Partys und DJ-Sets von
 Donnerstag- bis Samstagabend aus und erstellt daraus:
 
@@ -16,7 +16,7 @@ Alles ist gratis: GitHub Actions und GitHub Pages, kein eigener Server, keine KI
 ## Ablauf
 
 ```
-Montag früh · GitHub Actions
+Montag und Donnerstag früh · GitHub Actions
   10 Club-Websites lesen → Do–Sa-Abende auswählen → Bild + Webseite erzeugen → docs/ committen
                                                                                 │ GitHub Pages
 Kindle (gejailbreakt)                                                           ▼

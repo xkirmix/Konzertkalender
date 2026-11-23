@@ -169,3 +169,45 @@ def test_service_restarts_itself_after_an_update_was_copied(kindle: FakeKindle) 
     assert kindle.wait_until(lambda: "Ereignisquellen beendet" in kindle.log_text())
     assert kindle.log_text().count("Neue Version gefunden") == 1
     assert (runtime_home / "konzertkalender.conf").read_text() == config.read_text()
+
+
+def test_calendar_is_painted_again_when_the_lock_screen_covered_it(kindle: FakeKindle) -> None:
+    refresh_result(kindle)
+    kindle.powerd_events(["goingToScreenSaver"])
+    kindle.run_daemon()
+    kindle.draw_lock_screen_over_calendar()
+    kindle.forget_calls()
+    kindle.powerd_events(["wakeupFromSuspend", "readyToSuspend"])
+    kindle.run_daemon()
+    assert kindle.calls().count(f"eips -f -g {kindle.image_file}") == 1
+    assert "Kalender war übermalt" in kindle.log_text()
+
+
+def test_calendar_is_not_repainted_while_the_screen_still_shows_it(kindle: FakeKindle) -> None:
+    refresh_result(kindle)
+    kindle.powerd_events(["goingToScreenSaver"])
+    kindle.run_daemon()
+    kindle.forget_calls()
+    kindle.powerd_events(["wakeupFromSuspend", "readyToSuspend", "readyToSuspend"])
+    kindle.run_daemon()
+    assert f"eips -f -g {kindle.image_file}" not in kindle.calls()
+
+
+def test_lock_screen_is_left_alone_while_somebody_uses_the_kindle(kindle: FakeKindle) -> None:
+    refresh_result(kindle)
+    kindle.powerd_events(["goingToScreenSaver"])
+    kindle.run_daemon()
+    kindle.draw_lock_screen_over_calendar()
+    kindle.set_powerd_state("active")
+    kindle.forget_calls()
+    kindle.powerd_events(["wakeupFromSuspend"])
+    kindle.run_daemon()
+    assert f"eips -f -g {kindle.image_file}" not in kindle.calls()
+
+
+def test_repeated_suspend_requests_log_the_wakeup_once(kindle: FakeKindle) -> None:
+    refresh_result(kindle)
+    kindle.powerd_events(["readyToSuspend", "readyToSuspend", "readyToSuspend"])
+    kindle.run_daemon()
+    assert kindle.log_text().count("Schlaf – Wecker") == 1
+    assert len([call for call in kindle.calls() if "rtcWakeup" in call]) == 3

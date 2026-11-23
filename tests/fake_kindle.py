@@ -35,6 +35,7 @@ class FakeKindle:
         self.served_image = root / "served" / "kalender.png"
         self.keep_listening_flag = root / "keep-listening"
         self.powerd_state_file = root / "powerd-state"
+        self.framebuffer = root / "fb0"
         self.tick_seconds = 0
         shutil.copytree(KINDLE_SOURCE, self.install_home)
         for folder in (self.data_dir, self.tmp_dir, self.fake_bin, self.served_image.parent):
@@ -42,6 +43,7 @@ class FakeKindle:
         self.serve(PNG_BYTES)
         self.powerd_events([])
         self.set_powerd_state("screenSaver")
+        self.framebuffer.write_bytes(b"calendar")
         self._point_image_url_at_served_file()
         self._write_fake_tools(wifi_state)
 
@@ -57,6 +59,13 @@ class FakeKindle:
 
     def set_powerd_state(self, state: str) -> None:
         self.powerd_state_file.write_text(f"{state}\n")
+
+    def draw_lock_screen_over_calendar(self) -> None:
+        """What Amazon does after a short wakeup: its own lock screen lands in the framebuffer."""
+        self.framebuffer.write_bytes(b"advert")
+
+    def forget_calls(self) -> None:
+        self.calls_file.unlink(missing_ok=True)
 
     def log_text(self) -> str:
         log_file = self.data_dir / "konzertkalender.log"
@@ -132,6 +141,7 @@ class FakeKindle:
             "KONZERTKALENDER_TMP_DIR": str(self.tmp_dir),
             "SCREENSAVER_SETTLE_SECONDS": "0",
             "TICK_SECONDS": str(self.tick_seconds),
+            "KONZERTKALENDER_FRAMEBUFFER": str(self.framebuffer),
         }
 
     def _point_image_url_at_served_file(self) -> None:

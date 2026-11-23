@@ -3,6 +3,7 @@ name: Wochen-Update
 on:
   schedule:
     - cron: "15 4 * * 1"  # jeden Montag 04:15 UTC = 05:15 (Winter) bzw. 06:15 (Sommer) Schweizer Zeit
+    - cron: "15 4 * * 4"  # Donnerstag: spät angekündigte Events, und Ersatz falls der Montag ausfällt
   workflow_dispatch: {}  # von Hand starten: Actions → Wochen-Update → Run workflow
 
 permissions:

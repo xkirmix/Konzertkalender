@@ -19,6 +19,6 @@ DATA_DIR="${KONZERTKALENDER_DATA_DIR:-/var/local/konzertkalender}"
 
 . "$KALENDER_HOME/konzertkalender.conf"
 
-for kalender_module in log display wifi download schedule refresh service browser power events update; do
+for kalender_module in log display screen_guard wifi download schedule refresh service browser power events update; do
     . "$KALENDER_HOME/bin/lib_$kalender_module.sh"
 done

@@ -1,160 +1,285 @@
 {
-  "erstellt": "2026-11-20T20:56+01:00",
+  "erstellt": "2026-11-23T14:48+01:00",
   "wochenende": {
-    "von": "2026-11-19",
-    "bis": "2026-11-21"
+    "von": "2026-11-26",
+    "bis": "2026-11-28"
   },
   "abende": {
-    "2026-11-19": [],
-    "2026-11-20": [
+    "2026-11-26": [
       {
-        "club": "Dachstock",
-        "titel": "«Dominic» Album Release Show",
-        "beginn": "2026-11-20T21:00+01:00",
-        "datum": "2026-11-20",
+        "club": "Rössli",
+        "titel": "Tight Finks – Rockin‘ Rössli – Vol. 5 Support; The Melmacs, Afterparty with DJ Mischeria",
+        "beginn": "2026-11-26T20:00+01:00",
+        "datum": "2026-11-26",
         "art": "konzert",
         "genres": [
-          "Pop",
-          "Indie",
-          "Mundart"
+          "Powerpop",
+          "Punk"
         ],
-        "link": "https://dachstock.ch/events/20-11-2026-edb-dominic-album-release-show"
+        "link": "https://www.souslepont-roessli.ch/events/tight-finks-rockin-roessli-vol-5-support-the-melmacs/"
       },
       {
-        "club": "Gaskessel",
-        "titel": "ULTRA DANCE w/ Lolalita (BEL)",
-        "beginn": "2026-11-20T23:00+01:00",
-        "datum": "2026-11-20",
+        "club": "Rössli",
+        "titel": "Afterparty with DJ Mischeria",
+        "beginn": "2026-11-26T23:30+01:00",
+        "datum": "2026-11-26",
         "art": "party",
         "genres": [
-          "Jumpstyle",
-          "Hard Dance",
-          "Hardcore"
+          "60s",
+          "70s",
+          "80s"
         ],
-        "link": "https://gaskessel.ch/programm/ultra-dance-nov/"
-      },
-      {
-        "club": "ISC",
-        "titel": "030 BERN – Bovskey + Carlo Coke + GALOPP",
-        "beginn": "2026-11-20T23:00+01:00",
-        "datum": "2026-11-20",
-        "art": "party",
-        "genres": [
-          "House",
-          "Baile House",
-          "Techno"
-        ],
-        "link": "https://isc-club.ch/programm/bovskey-carlo-coke-galopp/"
+        "link": "https://www.souslepont-roessli.ch/events/afterparty-with-dj-mischeria/"
       },
       {
         "club": "Cafete",
-        "titel": "Hexagon",
-        "beginn": "2026-11-20T23:00+01:00",
-        "datum": "2026-11-20",
+        "titel": "Tanzbär",
+        "beginn": "2026-11-26T23:30+01:00",
+        "datum": "2026-11-26",
         "art": "party",
         "genres": [
-          "Techno",
-          "Hardgroove",
-          "Speedhouse"
+          "Organic House",
+          "Minimal",
+          "Deep Tech"
         ],
         "link": "https://cafete.ch/"
       },
       {
-        "club": "PROGR Aula",
-        "titel": "Salsa im Progr",
-        "beginn": "2026-11-20T21:30+01:00",
-        "datum": "2026-11-20",
-        "art": "party",
-        "genres": [],
-        "link": "https://www.progr.ch/de/agenda/salsa-im-progr-8097/"
-      },
-      {
-        "club": "PROGR Turnhalle",
-        "titel": "FREQUENZ w/ DAAEERU & GIANUNDSO [AF•FEKT]",
-        "beginn": "2026-11-20T22:00+01:00",
-        "datum": "2026-11-20",
-        "art": "party",
-        "genres": [
-          "House"
-        ],
-        "link": "https://www.progr.ch/de/agenda/frequenz-w-daaeeru-gianundso-afbfekt-8763/"
-      },
-      {
-        "club": "Bad Bonn",
-        "titel": "Akroasis, Ghoast, Comaniac",
-        "beginn": "2026-11-20T20:00+01:00",
-        "datum": "2026-11-20",
+        "club": "Café Kairo",
+        "titel": "AUSVERKAUFT – The Monsters Plattentaufe / Support: Andreas Trash Band",
+        "beginn": "2026-11-26T21:00+01:00",
+        "datum": "2026-11-26",
         "art": "konzert",
         "genres": [
-          "Metal",
-          "Stoner",
-          "Prog"
+          "Punk",
+          "Garage",
+          "Rock"
         ],
-        "link": "https://club.badbonn.ch/archive/2026/akroasis-ghoast-comaniac"
-      },
-      {
-        "club": "Nouveau Monde",
-        "titel": "Ici d'Ici #23 Leti SV + Raïmé +Victims of the Scavenger's Daughter + NACRE",
-        "beginn": "2026-11-20T20:30+01:00",
-        "datum": "2026-11-20",
-        "art": "konzert",
-        "genres": [
-          "Gospel",
-          "Pop",
-          "Rap"
-        ],
-        "link": "https://www.nouveaumonde.ch/agenda/ici-dici-23/"
-      }
-    ],
-    "2026-11-21": [
-      {
-        "club": "Gaskessel",
-        "titel": "Somnia w/ Grace Dahl (NL)",
-        "beginn": "2026-11-21T23:00+01:00",
-        "datum": "2026-11-21",
-        "art": "party",
-        "genres": [
-          "Techno"
-        ],
-        "link": "https://gaskessel.ch/programm/somnia-grace-dahl/"
-      },
-      {
-        "club": "ISC",
-        "titel": "Trillenium",
-        "beginn": "2026-11-21T23:00+01:00",
-        "datum": "2026-11-21",
-        "art": "party",
-        "genres": [
-          "Hits",
-          "Hip Hop",
-          "Electroclash"
-        ],
-        "link": "https://isc-club.ch/programm/trillenium-2/"
-      },
-      {
-        "club": "Cafete",
-        "titel": "Bubbbbbles",
-        "beginn": "2026-11-21T23:00+01:00",
-        "datum": "2026-11-21",
-        "art": "party",
-        "genres": [
-          "Techno",
-          "Breaks"
-        ],
-        "link": "https://cafete.ch/"
+        "link": "https://www.cafe-kairo.ch/programm"
       },
       {
         "club": "Fri-Son",
-        "titel": "MARIA BC (US)",
-        "beginn": "2026-11-21T20:00+01:00",
-        "datum": "2026-11-21",
+        "titel": "SMUF PARTY - ANNÉES 2000",
+        "beginn": "2026-11-26T22:00+01:00",
+        "datum": "2026-11-26",
+        "art": "party",
+        "genres": [
+          "Années 2000",
+          "All-Styles"
+        ],
+        "link": "https://www.fri-son.ch/de/evenement/smuf-1"
+      }
+    ],
+    "2026-11-27": [
+      {
+        "club": "Dachstock",
+        "titel": "Double Trouble",
+        "beginn": "2026-11-27T23:00+01:00",
+        "datum": "2026-11-27",
+        "art": "party",
+        "genres": [
+          "Reggaeton",
+          "Trance",
+          "HipHop"
+        ],
+        "link": "https://dachstock.ch/events/27-11-2026-double-trouble"
+      },
+      {
+        "club": "Gaskessel",
+        "titel": "Julian Brown & Eva Leandra",
+        "beginn": "2026-11-27T20:00+01:00",
+        "datum": "2026-11-27",
         "art": "konzert",
         "genres": [
-          "Ambient Folk",
-          "Dream Pop",
-          "Slowcore"
+          "Singer-Songwriter",
+          "Wohnzimmerkonzert"
         ],
-        "link": "https://www.fri-son.ch/de/evenement/maria-bc"
+        "link": "https://gaskessel.ch/programm/julian-brown-eva-leandra/"
+      },
+      {
+        "club": "ISC",
+        "titel": "The Monsters – Bern-In-Hell Tour",
+        "beginn": "2026-11-27T20:00+01:00",
+        "datum": "2026-11-27",
+        "art": "konzert",
+        "genres": [
+          "Garage Rock",
+          "Trash Punk",
+          "Rockabilly"
+        ],
+        "link": "https://isc-club.ch/programm/the-monsters-bern-in-hell-tour/"
+      },
+      {
+        "club": "ISC",
+        "titel": "NullNull – Die 00er Jahre Disco",
+        "beginn": "2026-11-27T23:00+01:00",
+        "datum": "2026-11-27",
+        "art": "party",
+        "genres": [
+          "Pop",
+          "Hip Hop",
+          "Electroclash"
+        ],
+        "link": "https://isc-club.ch/programm/nullnull-2/"
+      },
+      {
+        "club": "Cafete",
+        "titel": "Cafete Wave Night",
+        "beginn": "2026-11-27T22:00+01:00",
+        "datum": "2026-11-27",
+        "art": "party",
+        "genres": [
+          "Lo-Fi Minimal Wave",
+          "Acid Eurodance",
+          "Cold House Wave"
+        ],
+        "link": "https://cafete.ch/"
+      },
+      {
+        "club": "Bad Bonn",
+        "titel": "Soybomb, Cedric Blaser, Bürgerkratiepiano",
+        "beginn": "2026-11-27T20:30+01:00",
+        "datum": "2026-11-27",
+        "art": "konzert",
+        "genres": [
+          "Indie",
+          "Prog",
+          "Psych"
+        ],
+        "link": "https://club.badbonn.ch/archive/2026/soybomb-cedric-blaser"
+      },
+      {
+        "club": "Nouveau Monde",
+        "titel": "Black Metal Friday #84 : Mourir + bleak (Vernissage) + Molasse",
+        "beginn": "2026-11-27T20:30+01:00",
+        "datum": "2026-11-27",
+        "art": "konzert",
+        "genres": [
+          "Metal"
+        ],
+        "link": "https://www.nouveaumonde.ch/agenda/full-metal-84/"
+      }
+    ],
+    "2026-11-28": [
+      {
+        "club": "Dachstock",
+        "titel": "Darkside",
+        "beginn": "2026-11-28T23:00+01:00",
+        "datum": "2026-11-28",
+        "art": "party",
+        "genres": [
+          "Drum and Bass"
+        ],
+        "link": "https://dachstock.ch/events/28-11-2026-darkside"
+      },
+      {
+        "club": "Gaskessel",
+        "titel": "Zero Zero",
+        "beginn": "2026-11-28T23:00+01:00",
+        "datum": "2026-11-28",
+        "art": "party",
+        "genres": [
+          "2000er Smash HIts"
+        ],
+        "link": "https://gaskessel.ch/programm/zero-zero-nov-26/"
+      },
+      {
+        "club": "ISC",
+        "titel": "Golden Tolerdance – DIVA NIGHT",
+        "beginn": "2026-11-28T22:00+01:00",
+        "datum": "2026-11-28",
+        "art": "party",
+        "genres": [
+          "Hits aus allen Dekaden"
+        ],
+        "link": "https://isc-club.ch/programm/golden-tolerdance-diva-night/"
+      },
+      {
+        "club": "Cafete",
+        "titel": "Jamaican Roots Culture #53",
+        "beginn": "2026-11-28T23:00+01:00",
+        "datum": "2026-11-28",
+        "art": "party",
+        "genres": [
+          "Rootse Reggae & Dub",
+          "Early Reggae & Rocksteady",
+          "Ska"
+        ],
+        "link": "https://cafete.ch/"
+      },
+      {
+        "club": "Café Kairo",
+        "titel": "Neoangin aka Jim Avignon + Taranja Wu",
+        "beginn": "2026-11-28T21:00+01:00",
+        "datum": "2026-11-28",
+        "art": "konzert",
+        "genres": [
+          "Pop",
+          "Electronic",
+          "Singer-Songwriter"
+        ],
+        "link": "https://www.cafe-kairo.ch/programm"
+      },
+      {
+        "club": "PROGR Aula",
+        "titel": "Kammerorchester Neufeld Bern – Bachtók",
+        "beginn": "2026-11-28T19:30+01:00",
+        "datum": "2026-11-28",
+        "art": "konzert",
+        "genres": [
+          "Klassik"
+        ],
+        "link": "https://www.progr.ch/de/agenda/kammerorchester-neufeld-bern-bachtok-8754/"
+      },
+      {
+        "club": "Sonarraum U64 (PROGR)",
+        "titel": "Jazzwerkstatt presents: Keenan Ahrends 4tet",
+        "beginn": "2026-11-28T21:00+01:00",
+        "datum": "2026-11-28",
+        "art": "konzert",
+        "genres": [
+          "Jazz",
+          "Improvisation"
+        ],
+        "link": "https://www.progr.ch/de/agenda/jazzwerkstatt-presents-keenan-ahrends-4tet-8697/"
+      },
+      {
+        "club": "Bad Bonn",
+        "titel": "E-L-R, Abraham",
+        "beginn": "2026-11-28T21:00+01:00",
+        "datum": "2026-11-28",
+        "art": "konzert",
+        "genres": [
+          "Doom",
+          "Drone",
+          "Metal"
+        ],
+        "link": "https://club.badbonn.ch/archive/2026/e-l-r-abraham"
+      },
+      {
+        "club": "Fri-Son",
+        "titel": "WOOD'HEART",
+        "beginn": "2026-11-28T22:00+01:00",
+        "datum": "2026-11-28",
+        "art": "konzert",
+        "genres": [
+          "Hip-Hop",
+          "Rap"
+        ],
+        "link": "https://www.fri-son.ch/de/evenement/woodheart-0"
+      },
+      {
+        "club": "Nouveau Monde",
+        "titel": "MYR (Vernissage) + Osmosis + Afterparty by Emery",
+        "beginn": "2026-11-28T21:30+01:00",
+        "datum": "2026-11-28",
+        "art": "konzert",
+        "genres": [
+          "Electronic",
+          "Drum & Bass",
+          "Techno"
+        ],
+        "link": "https://www.nouveaumonde.ch/agenda/myr-osmosis-emery/"
       }
     ]
   },
@@ -167,13 +292,13 @@
     },
     {
       "club": "Gaskessel",
-      "events": 52,
+      "events": 51,
       "ok": true,
       "fehler": null
     },
     {
       "club": "ISC",
-      "events": 25,
+      "events": 22,
       "ok": true,
       "fehler": null
     },
@@ -185,7 +310,7 @@
     },
     {
       "club": "Cafete",
-      "events": 16,
+      "events": 14,
       "ok": true,
       "fehler": null
     },
@@ -197,7 +322,7 @@
     },
     {
       "club": "PROGR",
-      "events": 58,
+      "events": 54,
       "ok": true,
       "fehler": null
     },
@@ -209,13 +334,13 @@
     },
     {
       "club": "Fri-Son",
-      "events": 25,
+      "events": 23,
       "ok": true,
       "fehler": null
     },
     {
       "club": "Nouveau Monde",
-      "events": 52,
+      "events": 51,
       "ok": true,
       "fehler": null
     }

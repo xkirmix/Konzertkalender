@@ -1,5 +1,5 @@
 {
-  "erstellt": "2026-11-23T15:34+01:00",
+  "erstellt": "2026-11-26T14:50+01:00",
   "wochenende": {
     "von": "2026-11-26",
     "bis": "2026-11-28"
@@ -268,43 +268,43 @@
     },
     {
       "club": "Gaskessel",
-      "events": 51,
-      "ok": true,
-      "fehler": null
-    },
-    {
-      "club": "ISC",
-      "events": 22,
-      "ok": true,
-      "fehler": null
-    },
-    {
-      "club": "Rössli",
-      "events": 28,
-      "ok": true,
-      "fehler": null
-    },
-    {
-      "club": "Cafete",
-      "events": 14,
-      "ok": true,
-      "fehler": null
-    },
-    {
-      "club": "Café Kairo",
-      "events": 18,
-      "ok": true,
-      "fehler": null
-    },
-    {
-      "club": "PROGR",
       "events": 54,
       "ok": true,
       "fehler": null
     },
     {
+      "club": "ISC",
+      "events": 21,
+      "ok": true,
+      "fehler": null
+    },
+    {
+      "club": "Rössli",
+      "events": 27,
+      "ok": true,
+      "fehler": null
+    },
+    {
+      "club": "Cafete",
+      "events": 13,
+      "ok": true,
+      "fehler": null
+    },
+    {
+      "club": "Café Kairo",
+      "events": 19,
+      "ok": true,
+      "fehler": null
+    },
+    {
+      "club": "PROGR",
+      "events": 49,
+      "ok": true,
+      "fehler": null
+    },
+    {
       "club": "Bad Bonn",
-      "events": 23,
+      "events": 22,
       "ok": true,
       "fehler": null
     },
@@ -316,7 +316,7 @@
     },
     {
       "club": "Nouveau Monde",
-      "events": 51,
+      "events": 50,
       "ok": true,
       "fehler": null
     }
